@@ -1,0 +1,9 @@
+class <%= "#{migration_name.classify}s" %> < <%= migration_class_name %>
+  def change
+    add_column :<%= name.tableize %>, :confirmation_token, :string, default: nil
+    add_column :<%= name.tableize %>, :confirmed_at, :timestamp, default: nil
+    add_column :<%= name.tableize %>, :confirmation_sent_at, :timestamp, default: nil
+
+    add_index :<%= name.tableize %>, :confirmation_token
+  end
+end
