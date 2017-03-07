@@ -7,6 +7,7 @@ module LpTokenMaster
       
       # helper methods for interpolation
       # another fun comment
+      # more!
       def do_by_token!(klass, key, token, **params)
         check_manageable! klass, key
         #check_params!(params)
