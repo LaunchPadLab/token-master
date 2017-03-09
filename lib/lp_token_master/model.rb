@@ -4,30 +4,20 @@ require 'securerandom'
 module LpTokenMaster
   class Model
     class << self
-
-      #attr_reader for the key so not constantly passed in?
-      def manageable_column_names(key)
-        manageable_column_names = ["#{key}_token", "#{key}_sent_at", "#{key}_at"]
-        unless key == 'confirm'
-          manageable_column_names.push("password", "password_confirmation")
-        end
-        manageable_column_names
-      end
-
-      def do_by_token!(klass, key, token, args={})
+      
+      # helper methods for interpolation
+      # another fun comment
+      # more!
+      def do_by_token!(klass, key, token, **params)
         check_manageable! klass, key
+        #check_params!(params)
         token_column = {"#{key}_token".to_sym => token}
         model = klass.find_by(token_column)
         check_token_active! model, key
 
-        model.send "#{key}_at=", Time.now
-        manageable_column_names = manageable_column_names(key)
-        if manageable_column_names.include?("password")
-          model.update(password: args[:password],
-                      password_confirmation: args[:password_confirmation])
-        end
-        model
-        # model.save
+        model.update!(
+          params.merge({"#{key}_created_at" => Time.now})
+        )
       end
 
       def set_token!(model, key, token_length=LpTokenMaster.config.token_length)
@@ -35,9 +25,9 @@ module LpTokenMaster
         token = generate_token token_length
 
         model.send "#{key}_token=", token
-        model.send "#{key}_at=", nil
-        model.send "#{key}_at=", nil
-        # model.save
+        model.send "#{key}_created_at=", nil
+        model.send "#{key}_sent_at=", nil
+        model.save(validate: false)
         token
       end
 
