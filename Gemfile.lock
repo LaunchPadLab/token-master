@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lp_token_master (0.0.1)
+    token_master (0.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -11,7 +11,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  lp_token_master!
+  token_master!
 
 BUNDLED WITH
    1.12.5
