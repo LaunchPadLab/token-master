@@ -19,7 +19,7 @@ module TokenMaster
           end
           #class methods
           define_method("self.#{tokenable}_by_token".to_s) do |token, **params|
-            TokenMaster.do_by_token!(self.class, tokenable, token, **params)
+            TokenMaster.do_by_token!(self, tokenable, token, **params)
           end
         end
       end

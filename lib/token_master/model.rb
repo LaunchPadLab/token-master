@@ -36,6 +36,22 @@ module TokenMaster
         model.send sent_at_col(key), Time.now
       end
 
+      def status(model, key)
+        raise 'no token set' unless token_set?(model, key)
+        raise 'token expired' unless token_active?(model, key)
+        raise 'instructions not sent' unless invite_sent?(model, key)
+        raise "#{key} pending" unless completed?(model, key)
+      end
+
+      # alternative status method:
+      # def alt_status(model, key)
+      #   msg = token_set?(model, key) ? 'token set' : raise 'token not set'
+      #   msg += token_active?(model, key) ? 'token active' : raise 'token expired'
+      #   msg += invite_sent?(model, key) ? 'instructions sent' : raise 'instructions not sent'
+      #   msg += completed?(key, model) ? "#{key} completed" : raise "#{key} pending"
+      #   msg
+      # end
+
       private
 
         def token_col(key)
@@ -92,12 +108,20 @@ module TokenMaster
           Time.now <= (model.send(sent_at_col(key)) + ((token_lifetime(key)) * 60 * 60 * 24))
         end
 
-        def check_instructions_not_sent!(model, key)
-          raise Error, "#{key} already sent" unless instructions_not_sent?(model, key)
+        def check_instructions_sent!(model, key)
+          raise Error, "#{key} already sent" if instructions_sent?(model, key)
         end
 
-        def instructions_not_sent?(model, key)
-          model.send(sent_at_col(key)) == nil
+        def instructions_sent?(model, key)
+          model.send(sent_at_col(key)).present?
+        end
+
+        def token_set?(model, key)
+          model.send(token_col(key)).present?
+        end
+
+        def completed?(model, key)
+          model.send(token_col(key)).present?
         end
 
         def generate_token(length)
