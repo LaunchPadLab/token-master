@@ -9,8 +9,8 @@ module TokenMaster
         @source_root ||= File.expand_path('../templates', __FILE__)
       end
 
-      def self.options
-        @options ||= options
+      def self.arguments
+        @arguments ||= arguments
       end
 
       def generate_migration
@@ -20,7 +20,6 @@ module TokenMaster
       def migration_name
         "add_token_master_to_#{name.underscore.pluralize}"
       end
-
 
       def migration_class_name
         if Rails::VERSION::MAJOR >= 5

@@ -1,12 +1,12 @@
 class <%= "#{migration_name.classify}" %> < <%= migration_class_name %>
   def change
-    <% @options.each do |option| %>
-      <!-- do loop here for number of columns specific - or multiple migration files? -->
-      add_column :<%= name.tableize %>, <%= "#{option}_token".to_sym %>, :string, default: nil
-      add_column :<%= name.tableize %>, <%= "#{option}_created_at".to_sym %>, :timestamp, default: nil
-      add_column :<%= name.tableize %>, <%= "#{option}_sent_at".to_sym %>, :timestamp, default: nil
+    <% @arguments.each do |argument| %>
+      add_column :<%= name.tableize %>, <%= "#{argument}_token".to_sym %>, :string, default: nil
+      add_column :<%= name.tableize %>, <%= "#{argument}_created_at".to_sym %>, :timestamp, default: nil
+      add_column :<%= name.tableize %>, <%= "#{argument}_sent_at".to_sym %>, :timestamp, default: nil
+      add_column :<%= name.tableize %>, <%= "#{argument}_completed_at".to_sym %>, :timestamp, default: nil
 
-      add_index :<%= name.tableize %>, <%= "#{option}_token".to_sym %>
+      add_index :<%= name.tableize %>, <%= "#{argument}_token".to_sym %>
     <% end %>
   end
 end

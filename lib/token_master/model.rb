@@ -6,34 +6,49 @@ module TokenMaster
     class << self
       def do_by_token!(klass, key, token, **params)
         check_manageable! klass, key
-        check_params! key, params
         token_column = { token_col(key) => token }
         model = klass.find_by(token_column)
         check_token_active! model, key
+        check_params! key, params
 
         model.update!(
-          params.merge({ created_at_col(key) => Time.now })
+          params.merge({ completed_at_col(key) => Time.now })
         )
       end
 
-      def set_token!(model, key, token_length = TokenMaster.config.token_length)
+      def set_token!(model, key, token_length = nil)
+        token_length ||= TokenMaster.config.get_token_length(key.to_sym)
         check_manageable! model.class, key
         token = generate_token token_length
 
-        model.send token_col(key), token
-        model.send created_at_col(key), nil
-        model.send sent_at_col(key), nil
+        model.update({
+          token_col(key) => token,
+          created_at_col(key) => Time.now,
+          sent_at_col(key) => nil,
+          completed_at_col(key) => nil
+        })
         model.save(validate: false)
         token
       end
 
       def send_instructions!(model, key)
         check_manageable! model.class, key
-        check_instructions_not_sent! model, key
+        check_instructions_sent! model, key
 
         yield if block_given?
 
-        model.send sent_at_col(key), Time.now
+        model.update(sent_at_col(key) => Time.now)
+      end
+
+      def status(model, key)
+        check_manageable! model.class, key
+        return 'completed' if completed?(model, key)
+        return 'sent' if instructions_sent?(model, key)
+        if token_set?(model, key)
+          return 'expired' unless token_active?(model, key)
+          return 'created'
+        end
+        'no token'
       end
 
       private
@@ -50,22 +65,16 @@ module TokenMaster
           "#{key}_sent_at".to_sym
         end
 
+        def completed_at_col(key)
+          "#{key}_completed_at".to_sym
+        end
+
         def token_lifetime(key)
-          TokenMaster.config.token_lifetimes[key.to_sym]
+          TokenMaster.config.get_token_lifetime(key.to_sym)
         end
 
-        def required_params
-          TokenMaster.required_params
-        end
-
-        def check_params!(key, params)
-          key = key.to_sym
-          if required_params.key?(key)
-            # what if user passes in extra columns / typos? It should error out
-            # later on the update method. Do we want to catch that here?
-            raise Error, 'You did not pass in the required params for this tokenable' unless required_params[key].all? { |value| params.keys.include? value }
-          end
-          return true
+        def required_params(key)
+          TokenMaster.config.required_params(key.to_sym)
         end
 
         def check_manageable!(klass, key)
@@ -78,8 +87,16 @@ module TokenMaster
           %W(
             #{key}_token
             #{key}_created_at
+            #{key}_completed_at
             #{key}_sent_at
           ).all? { |attr| column_names.include? attr }
+        end
+
+        def check_params!(key, params)
+          required_params = TokenMaster.config.get_required_params(key.to_sym)
+          raise Error, 'You did not pass in the required params for this tokenable' unless required_params.all? do |key|
+            params.keys.include? key
+          end
         end
 
         def check_token_active!(model, key)
@@ -88,16 +105,32 @@ module TokenMaster
 
         def token_active?(model, key)
           model.send(token_col(key)) &&
-          model.send(sent_at_col(key)) &&
-          Time.now <= (model.send(sent_at_col(key)) + ((token_lifetime(key)) * 60 * 60 * 24))
+          model.send(created_at_col(key)) &&
+          Time.now <= (model.send(created_at_col(key)) + ((token_lifetime(key)) * 60 * 60 * 24))
         end
 
-        def check_instructions_not_sent!(model, key)
-          raise Error, "#{key} already sent" unless instructions_not_sent?(model, key)
+        def check_instructions_sent!(model, key)
+          raise Error, "#{key} already sent" if instructions_sent?(model, key)
         end
 
-        def instructions_not_sent?(model, key)
-          model.send(sent_at_col(key)) == nil
+        def instructions_sent?(model, key)
+          model.send(sent_at_col(key)).present?
+        end
+
+        def token_set?(model, key)
+          model.send(token_col(key)).present?
+        end
+
+        def token_set!(model, key)
+          raise Error, "#{key}_token not set" unless token_set?(model, key)
+        end
+
+        def completed?(model, key)
+          model.send(completed_at_col(key)).present?
+        end
+
+        def completed!(model, key)
+          raise Error, "#{key} not completed" unless completed?(model, key)
         end
 
         def generate_token(length)

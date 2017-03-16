@@ -1,23 +1,31 @@
 TokenMaster.config do |config|
+  # Set up your configurations for each tokenable using the methods at the bottom of this file.
+  # Examples:
 
-  # The number of days the token for each tokenable is active
-  # default:
-  # config.token_lifetimes = {
-  #   confirm: 14,
-  #   reset: 1,
-  #   invite: 10
+  # 'config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES' results in:
+
+  # config.confirm_options = {
+  #   token_lifetime: 14,
+  #   required_parms: [],
+  #   token_length: 20
   # }
 
-  # The number of characters in a token
-  # default: 20
-  #
-  # config.token_length = 30
+  # 'config.add_tokenable_options :reset, token_lifetime: 1, required_params: [:password, :password_confirmation], token_length: 15' results in:
 
-  # Required parameters for tokenable actions
-  # default:
-
-  # config.required_params = {
-  #   reset: [:password, :password_confirmation],
-  #   invite: [:password, :password_confirmation]
+  # config.reset_options = {
+  #   token_lifetime: 1,
+  #   required_parms: [:password, :password_confirmation],
+  #   token_length: 20
   # }
+
+  # 'config.add_tokenable_options :foo, token_lifetime: 10, required_params: [:email, token_length: config.DEFAULT_VALUES[:token_length]' results in:
+
+  # config.foo_options = {
+  #   token_lifetime: 10,
+  #   required_parms: [:email],
+  #   token_length: 20
+  # }
+
+
+  #### METHODS FOR YOUR CONFIGURATION BELOW ###
 end
