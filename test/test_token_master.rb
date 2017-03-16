@@ -9,12 +9,15 @@ CONFIRM_COLS = %w(
   confirm_token
   confirm_created_at
   confirm_sent_at
+  confirm_completed_at
   reset_token
   reset_created_at
   reset_sent_at
+  reset_completed_at
   invite_token
   invite_created_at
   invite_sent_at
+  invite_completed_at
 )
 
 class MockActiveRecord

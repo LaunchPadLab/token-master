@@ -6,8 +6,8 @@ module TokenMaster
     class << self
       def do_by_token!(klass, key, token, **params)
         check_manageable! klass, key
-        check_params! params
-        token_column = { token_col(key) => token}
+        check_params! key, params
+        token_column = { token_col(key) => token }
         model = klass.find_by(token_column)
         check_token_active! model, key
 
@@ -16,7 +16,7 @@ module TokenMaster
         )
       end
 
-      def set_token!(model, key, token_length=TokenMaster.config.token_length)
+      def set_token!(model, key, token_length = TokenMaster.config.token_length)
         check_manageable! model.class, key
         token = generate_token token_length
 
@@ -34,10 +34,6 @@ module TokenMaster
         yield if block_given?
 
         model.send sent_at_col(key), Time.now
-      end
-
-      def pending?(model, key)
-        model.send(created_at_col(key)) == nil
       end
 
       private
@@ -65,7 +61,8 @@ module TokenMaster
         def check_params!(key, params)
           key = key.to_sym
           if required_params.key?(key)
-            #what if user passes in extra columns / typos? It should error out later on the update method. Do we want to catch that here?
+            # what if user passes in extra columns / typos? It should error out
+            # later on the update method. Do we want to catch that here?
             raise Error, 'You did not pass in the required params for this tokenable' unless required_params[key].all? { |value| params.keys.include? value }
           end
           return true
