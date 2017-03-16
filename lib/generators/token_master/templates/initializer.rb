@@ -1,9 +1,4 @@
 TokenMaster.config do |config|
-  # The number of characters in a token
-  # default: 20
-
-  # config.token_length = 30
-
   # Options for each tokenable
   # default:
 
