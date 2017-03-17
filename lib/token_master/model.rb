@@ -33,6 +33,7 @@ module TokenMaster
 
       def send_instructions!(model, key)
         check_manageable! model.class, key
+        check_token_set! model, key
         check_instructions_sent! model, key
 
         yield if block_given?
@@ -121,7 +122,7 @@ module TokenMaster
           model.send(token_col(key)).present?
         end
 
-        def token_set!(model, key)
+        def check_token_set!(model, key)
           raise Error, "#{key}_token not set" unless token_set?(model, key)
         end
 
@@ -129,7 +130,7 @@ module TokenMaster
           model.send(completed_at_col(key)).present?
         end
 
-        def completed!(model, key)
+        def check_completed!(model, key)
           raise Error, "#{key} not completed" unless completed?(model, key)
         end
 
