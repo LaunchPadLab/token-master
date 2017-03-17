@@ -17,8 +17,8 @@ module TokenMaster
       end
 
       def set_token!(model, key, token_length = nil)
-        token_length ||= TokenMaster.config.get_token_length(key.to_sym)
         check_manageable! model.class, key
+        token_length ||= TokenMaster.config.get_token_length(key.to_sym)
         token = generate_token token_length
 
         model.update({
@@ -36,7 +36,7 @@ module TokenMaster
         check_token_set! model, key
         check_instructions_sent! model, key
 
-        yield if block_given?
+        Proc.new.call if block_given?
 
         model.update!(sent_at_col(key) => Time.now)
       end
