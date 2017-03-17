@@ -28,6 +28,10 @@ module TokenMaster
       get_option(key, :token_length)
     end
 
+    def options_set?(key)
+      @options.key? key
+    end
+
     private
 
       def get_option(key, option)
