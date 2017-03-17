@@ -39,7 +39,8 @@ module TokenMaster
 
         yield if block_given?
 
-        model.update!(sent_at_col(key) => Time.now)
+        model.update(sent_at_col(key) => Time.now)
+        model.save(validate: false)
       end
 
       def status(model, key)
