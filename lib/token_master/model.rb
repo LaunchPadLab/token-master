@@ -18,7 +18,7 @@ module TokenMaster
 
       def set_token!(model, key, token_length = nil)
         check_manageable! model.class, key
-        check_configs! key
+        check_configs_set! key
         token_length ||= TokenMaster.config.get_token_length(key.to_sym)
         token = generate_token token_length
 
