@@ -11,8 +11,8 @@ module TokenMaster
           define_method("set_#{tokenable}_token!".to_sym) do
             TokenMaster::Model.set_token!(self, tokenable)
           end
-          define_method("send_#{tokenable}_instructions!".to_sym) do
-            TokenMaster::Model.send_instructions!(self, tokenable, &Proc.new)
+          define_method("send_#{tokenable}_instructions!".to_sym) do |&email|
+            TokenMaster::Model.send_instructions!(self, tokenable, &email)
           end
           define_method("#{tokenable}_status") do
             TokenMaster::Model.status(self, tokenable)
