@@ -36,7 +36,7 @@ module TokenMaster
         check_token_set! model, key
         check_instructions_sent! model, key
 
-        Proc.new.call if block_given?
+        yield if block_given?
 
         model.update!(sent_at_col(key) => Time.now)
       end
