@@ -124,10 +124,6 @@ describe TokenMaster::Model do
         token_lifetime: 2,
         required_params: [:password, :password_confirmation],
         token_length: 20)
-      config.add_tokenable_options(:invite,
-        token_lifetime: 10,
-        required_params: [:password, :password_confirmation],
-        token_length: 20)
     end
   end
 
@@ -163,6 +159,18 @@ describe TokenMaster::Model do
     end
   end
 
+  describe '#check_configs_set!' do
+    it 'configs not set' do
+      assert_raises TokenMaster::Error do
+        TM.send(:check_configs_set!, 'foo')
+      end
+    end
+
+    it 'configs set' do
+      assert_nil TM.send(:check_configs_set!, 'confirm')
+    end
+  end
+
   describe '#token_set?' do
     before do
       @manageable_model = MockTokenMaster.new
@@ -178,20 +186,20 @@ describe TokenMaster::Model do
     end
   end
 
-  describe '#token_set!' do
+  describe '#check_token_set!' do
     before do
       @manageable_model = MockTokenMaster.new
     end
 
     it 'when not set' do
       assert_raises TokenMaster::Error do
-        TM.send(:token_set!, @manageable_model, 'confirm')
+        TM.send(:check_token_set!, @manageable_model, 'confirm')
       end
     end
 
     it 'when set' do
       @manageable_model.confirm_token = 'foo'
-      assert_nil TM.send(:token_set!, @manageable_model, 'confirm')
+      assert_nil TM.send(:check_token_set!, @manageable_model, 'confirm')
     end
   end
 
@@ -290,35 +298,45 @@ describe TokenMaster::Model do
         @model = MockTokenMaster.new
       end
 
-      it 'sets the token to the configured length' do
-        TM.set_token! @model, 'confirm'
-        assert_equal @model.confirm_token.length, TokenMaster.config.get_token_length(:confirm)
+      describe 'when configs not set' do
+        it 'raises' do
+          assert_raises TokenMaster::Error do
+            TM.set_token!(@model, 'invite')
+          end
+        end
       end
 
-      it 'sets confirm created at time to now' do
-        TM.set_token! @model, 'confirm'
-        assert @model.confirm_created_at, Time.now
-      end
+      describe 'when configs set' do
+        it 'sets the token to the configured length' do
+          TM.set_token! @model, 'confirm'
+          assert_equal @model.confirm_token.length, TokenMaster.config.get_token_length(:confirm)
+        end
 
-      it 'sets confirmed completed at time to nil' do
-        TM.set_token! @model, 'confirm'
-        assert_nil @model.confirm_completed_at
-      end
+        it 'sets confirm created at time to now' do
+          TM.set_token! @model, 'confirm'
+          assert @model.confirm_created_at, Time.now
+        end
 
-      it 'sets confirm sent at time to nil' do
-        TM.set_token! @model, 'confirm'
-        assert_nil @model.confirm_sent_at
-      end
+        it 'sets confirmed completed at time to nil' do
+          TM.set_token! @model, 'confirm'
+          assert_nil @model.confirm_completed_at
+        end
 
-      it 'returns the token' do
-        token = TM.set_token! @model, 'confirm'
-        assert_equal token, @model.confirm_token
-      end
+        it 'sets confirm sent at time to nil' do
+          TM.set_token! @model, 'confirm'
+          assert_nil @model.confirm_sent_at
+        end
 
-      describe 'when token length is provided' do
-        it 'sets the token to the provided length' do
-          TM.set_token! @model, 'confirm', 40
-          assert_equal @model.confirm_token.length, 40
+        it 'returns the token' do
+          token = TM.set_token! @model, 'confirm'
+          assert_equal token, @model.confirm_token
+        end
+
+        describe 'when token length is provided' do
+          it 'sets the token to the provided length' do
+            TM.set_token! @model, 'confirm', 40
+            assert_equal @model.confirm_token.length, 40
+          end
         end
       end
     end
@@ -379,14 +397,9 @@ describe TokenMaster::Model do
           assert_in_delta model.confirm_completed_at, Time.now, 1
         end
 
-        describe 'password fields if reset or invite' do
+        describe 'udpates required fields if set' do
           it 'updates the password field if reset' do
             model = TM.do_by_token!(@klass, 'reset', @token, {password: @new_password, password_confirmation: @new_password})
-            assert_equal model.password, @new_password
-          end
-
-          it 'updates the password field if invite' do
-            model = TM.do_by_token!(@klass, 'invite', @token, {password: @new_password, password_confirmation: @new_password})
             assert_equal model.password, @new_password
           end
         end
@@ -409,20 +422,20 @@ describe TokenMaster::Model do
     end
   end
 
-  describe '#completed!' do
+  describe '#check_completed!' do
     before do
       @manageable_model = MockTokenMaster.new
     end
 
     it 'when not completed' do
       assert_raises TokenMaster::Error do
-        TM.send(:completed!, @manageable_model, 'confirm')
+        TM.send(:check_completed!, @manageable_model, 'confirm')
       end
     end
 
     it 'when completed' do
       @manageable_model.confirm_completed_at = Time.now
-      assert_nil TM.send(:completed!, @manageable_model, 'confirm')
+      assert_nil TM.send(:check_completed!, @manageable_model, 'confirm')
     end
   end
 
@@ -430,6 +443,18 @@ describe TokenMaster::Model do
     describe 'when not manageable' do
       before do
         @model = MockActiveRecord.new
+      end
+
+      it 'raises' do
+        assert_raises TokenMaster::Error do
+          TM.send_instructions!(@model, 'confirm')
+        end
+      end
+    end
+
+    describe 'when token not set' do
+      before do
+        @model = MockTokenMaster.new
       end
 
       it 'raises' do
