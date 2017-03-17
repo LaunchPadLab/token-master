@@ -95,7 +95,7 @@ module TokenMaster
         end
 
         def check_configs_set!(key)
-          raise Error 'You have not set the configurations for this tokenable.' unless TokenMaster.config.options_set?(key.to_sym)
+          raise Error, 'You have not set the configurations for this tokenable.' unless TokenMaster.config.options_set?(key.to_sym)
         end
 
         def check_params!(key, params)
