@@ -13,32 +13,17 @@ end
 ```
 ## For confirm
 
-user = TokenMaster.confirm_by_token!(User, token, **kwargs)
-# or
 user = User.confirm_by_token!(token, **kwargs)
 
-user = User.new
-token = TokenMaster.set_confirm_token!(user)
-# or
 token = user.set_confirm_token!
 
-TokenMaster.send_confirm_instructions!(user)
-# or
 user.send_confirm_instructions!
 
-TokenMaster.confirm_succeeded?(user)
-# or
-user.confirm_succeeded?
-
-TokenMaster.confirm_pending?(user)
-# or
-user.confirm_pending?
+user.confirm_status
 
 
 ## Same for foobar
 
-TokenMaster.foobar_by_token!(User, token)
-# or
 User.foobar_by_token!(token)
 
 ...
@@ -48,20 +33,39 @@ User.foobar_by_token!(token)
 ## Setup
 
 ```
-bundle exec rails generate token-master:model User confirm foobar
+bundle exec rails generate token_master:model User confirm foobar
 ```
 
 This creates the following columns:
 ```
     add_column :users, :confirm_token, :string, default: nil
     add_column :users, :confirm_created_at, :timestamp, default: nil
+    add_column :users, :confirm_completed_at, :timestamp, default: nil
     add_column :users, :confirm_sent_at, :timestamp, default: nil
 
     add_index :users, :confirm_token
 
     add_column :users, :foobar_token, :string, default: nil
     add_column :users, :foobar_created_at, :timestamp, default: nil
+    add_column :users, :foobar_completed_at, :timestamp, default: nil
     add_column :users, :foobar_sent_at, :timestamp, default: nil
 
     add_index :users, :foobar_token
+```
+
+```
+bundle exec rails generate token_master:install
+```
+This creates a config file for TokenMaster. The config file will include methods to add configurations for each tokenable, set to the default configurations. Configurations you can set include:
+
+- Token Lifetime (`:token_lifetime`, takes an integer
+- Reuired Params (`:token_lifetime`), takes an array
+- Token Length(`:token_length`), takes an integer
+
+```
+config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES'
+
+## OR 
+
+config.add_tokenable_options :reset, token_lifetime: 1, required_params: [:password, :password_confirmation], token_length: 15
 ```
