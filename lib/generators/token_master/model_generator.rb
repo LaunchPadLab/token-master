@@ -10,7 +10,7 @@ module TokenMaster
       end
 
       def self.arguments
-        @arguments ||= arguments
+        @arguments ||= arguments.shift
       end
 
       def generate_migration
@@ -28,6 +28,8 @@ module TokenMaster
           'ActiveRecord::Migration'
         end
       end
+
+      # check if initializer exists, if not copy over
 
       private
         def migration_file_name
