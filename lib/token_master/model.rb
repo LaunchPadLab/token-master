@@ -107,6 +107,8 @@ module TokenMaster
         end
 
         def check_token_active!(model, key)
+          raise Error, "#{key} token not found" unless model
+          raise Error, "#{key} already completed" if completed?(model, key)
           raise Error, "#{key} token expired" unless token_active?(model, key)
         end
 
