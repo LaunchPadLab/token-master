@@ -14,6 +14,8 @@ module TokenMaster
         model.update!(
           params.merge!(completed_at_col(key) => Time.now)
         )
+
+        model
       end
 
       def set_token!(model, key, token_length = nil)
