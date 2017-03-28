@@ -69,9 +69,8 @@ class MockTokenMaster < MockActiveRecord
   end
 
   def update!(**kwargs)
-    model = MockTokenMaster.new
-    kwargs.each { |k, v| model.send("#{k}=", v) }
-    model
+    kwargs.each { |k, v| self.send("#{k}=", v) }
+    self
   end
 end
 
@@ -397,10 +396,57 @@ describe TokenMaster::Model do
           assert_in_delta model.confirm_completed_at, Time.now, 1
         end
 
-        describe 'udpates required fields if set' do
+        describe 'updates required fields if needed' do
           it 'updates the password field if reset' do
             model = TM.do_by_token!(@klass, 'reset', @token, {password: @new_password, password_confirmation: @new_password})
             assert_equal model.password, @new_password
+          end
+        end
+      end
+    end
+  end
+
+  describe '#force_tokenable!' do
+    describe 'when not manageable' do
+      it 'raises' do
+        assert_raises TokenMaster::Error do
+          not_manageable = MockActiveRecord.new
+          TM.force_tokenable!(not_manageable, 'confirm')
+        end
+      end
+    end
+
+    describe 'when manageable' do
+      describe 'when not required params' do
+        it 'raises' do
+          model = MockTokenMaster.new
+          params = { password: 'password' }
+          assert_raises TokenMaster::Error do
+            TM.force_tokenable!(model, 'reset', params)
+          end
+        end
+      end
+
+      describe 'when required params' do
+        before do
+          @model = MockTokenMaster.new
+          @params = { password: 'password', password_confirmation: 'password' }
+        end
+
+        it 'returns the model' do
+          forced_model = TM.force_tokenable!(@model, 'reset', @params)
+          assert_instance_of MockTokenMaster, forced_model
+        end
+
+        it 'sets the reset completed at time to now' do
+          forced_model = TM.force_tokenable!(@model, 'reset', @params)
+          assert_in_delta forced_model.reset_completed_at, Time.now, 1
+        end
+
+        describe 'udpates required fields if needed' do
+          it 'updates the password field if reset' do
+            forced_model = TM.force_tokenable!(@model, 'reset', @params)
+            assert_equal forced_model.password, @params[:password]
           end
         end
       end
