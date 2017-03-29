@@ -28,11 +28,9 @@ module Rails
       end
 
       # check if initializer exists, if not copy over
-
-      private
-        def migration_file_name
-          "#{migration_name}.rb"
-        end
+      def migration_file_name
+        "#{migration_name}.rb"
+      end
     end
   end
 end
