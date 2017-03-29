@@ -1,6 +1,6 @@
 require 'rails/generators/active_record'
 
-module Rails
+module ActiveRecord
   module Generators
     class TokenMasterGenerator < ActiveRecord::Generators::Base
       desc 'Creates a TokenMaster migration for the specified model.'
