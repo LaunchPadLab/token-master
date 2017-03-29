@@ -2,19 +2,17 @@ require 'rails/generators/active_record'
 
 module TokenMaster
   module Generators
-    class ModelGenerator < ActiveRecord::Generators::Base
+    class MigrationGenerator < ActiveRecord::Generators::Base
       desc 'Creates a TokenMaster migration for the specified model.'
+
+      argument :attributes, type: :array, default: [], banner: "field:type field:type"
 
       def self.source_root
         @source_root ||= File.expand_path('../templates', __FILE__)
       end
 
-      def self.arguments
-        @arguments ||= arguments.shift
-      end
-
-      def generate_migration
-        migration_template 'migration.rb.erb', "db/migrate/#{migration_file_name}"
+      def copy_migration
+        migration_template 'migration.rb.erb', "db/migrate/#{migration_file_name}", migration_version: migration_class_name
       end
 
       def migration_name

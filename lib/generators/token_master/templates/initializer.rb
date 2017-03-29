@@ -26,6 +26,5 @@ TokenMaster.config do |config|
   #   token_length: 20
   # }
 
-
   #### METHODS FOR YOUR CONFIGURATION BELOW ###
 end

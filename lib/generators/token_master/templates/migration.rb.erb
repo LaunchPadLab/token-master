@@ -1,12 +1,12 @@
 class <%= "#{migration_name.classify}" %> < <%= migration_class_name %>
   def change
-    <% @arguments.each do |argument| %>
-      add_column :<%= name.tableize %>, <%= "#{argument}_token".to_sym %>, :string, default: nil
-      add_column :<%= name.tableize %>, <%= "#{argument}_created_at".to_sym %>, :timestamp, default: nil
-      add_column :<%= name.tableize %>, <%= "#{argument}_sent_at".to_sym %>, :timestamp, default: nil
-      add_column :<%= name.tableize %>, <%= "#{argument}_completed_at".to_sym %>, :timestamp, default: nil
+    <% attributes.each do |attribute| %>
+      add_column :<%= name.tableize %>, <%= "#{attribute}_token".to_sym %>, :string, default: nil
+      add_column :<%= name.tableize %>, <%= "#{attribute}_created_at".to_sym %>, :timestamp, default: nil
+      add_column :<%= name.tableize %>, <%= "#{attribute}_sent_at".to_sym %>, :timestamp, default: nil
+      add_column :<%= name.tableize %>, <%= "#{attribute}_completed_at".to_sym %>, :timestamp, default: nil
 
-      add_index :<%= name.tableize %>, <%= "#{argument}_token".to_sym %>
+      add_index :<%= name.tableize %>, <%= "#{attribute}_token".to_sym %>
     <% end %>
   end
 end
