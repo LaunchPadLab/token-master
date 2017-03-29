@@ -1,4 +1,5 @@
 require 'rails/generators/named_base'
+require 'rails/generators/migration'
 
 module TokenMaster
   module Generators
