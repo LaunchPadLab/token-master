@@ -1,12 +1,12 @@
-class <%= "#{migration_name.classify}" %> < <%= migration_class_name %>
+class <%= "#{migration_name.classify.pluralize}" %> < <%= migration_class_name %>
   def change
-    <% attributes_names.each do |attribute| %>
-      add_column :<%= name.tableize %>, <%= "#{attribute}_token".to_sym %>, :string, default: nil
-      add_column :<%= name.tableize %>, <%= "#{attribute}_created_at".to_sym %>, :timestamp, default: nil
-      add_column :<%= name.tableize %>, <%= "#{attribute}_sent_at".to_sym %>, :timestamp, default: nil
-      add_column :<%= name.tableize %>, <%= "#{attribute}_completed_at".to_sym %>, :timestamp, default: nil
+  <% attributes_names.each do |attribute| %>
+    add_column :<%= name.tableize %>, <%= ":#{attribute}_token" %>, :string, default: nil
+    add_column :<%= name.tableize %>, <%= ":#{attribute}_created_at" %>, :timestamp, default: nil
+    add_column :<%= name.tableize %>, <%= ":#{attribute}_sent_at" %>, :timestamp, default: nil
+    add_column :<%= name.tableize %>, <%= ":#{attribute}_completed_at" %>, :timestamp, default: nil
 
-      add_index :<%= name.tableize %>, <%= "#{attribute}_token".to_sym %>
-    <% end %>
+    add_index :<%= name.tableize %>, <%= ":#{attribute}_token" %>
+  <% end %>
   end
 end
