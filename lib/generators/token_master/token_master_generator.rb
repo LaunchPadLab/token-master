@@ -1,38 +1,14 @@
-require 'rails/generators/active_record'
+require 'rails/generators/named_base'
 
-module ActiveRecord
+module TokenMaster
   module Generators
-    class TokenMasterGenerator < ActiveRecord::Generators::Base
-      desc 'Creates a TokenMaster migration for the specified model.'
+    class TokenMasterGenerator < Rails::Generators::NamedBase
 
-      argument :attributes, type: :array, default: [], banner: "field:type field:type"
+      namespace "token_master"
+      source_route File.expand_path('../templates', __FILE__)
 
-      def self.source_root
-        @source_root ||= File.expand_path('../templates', __FILE__)
-      end
+      desc 'Generates a migration file for the given model (NAME) with the specified tokenable columns'
 
-      def copy_migration
-        migration_template 'migration.rb.erb', "db/migrate/#{migration_file_name}", migration_version: migration_class_name
-      end
-
-      def migration_name
-        "add_token_master_to_#{name.underscore.pluralize}"
-      end
-
-      def migration_class_name
-        if Rails::VERSION::MAJOR >= 5
-          "ActiveRecord::Migration[#{Rails::VERSION::MAJOR}.#{Rails::VERSION::MINOR}]"
-        else
-          'ActiveRecord::Migration'
-        end
-      end
-
-      # check if initializer exists, if not copy over
-
-      private
-        def migration_file_name
-          "#{migration_name}.rb"
-        end
     end
   end
 end
