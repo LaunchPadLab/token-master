@@ -33,7 +33,7 @@ User.foobar_by_token!(token)
 ## Setup
 
 ```
-bundle exec rails generate token_master:model User confirm foobar
+bundle exec rails generate token_master User confirm foobar
 ```
 
 This creates the following columns:
@@ -65,7 +65,7 @@ This creates a config file for TokenMaster. The config file will include methods
 ```
 config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES'
 
-## OR 
+## OR
 
 config.add_tokenable_options :reset, token_lifetime: 1, required_params: [:password, :password_confirmation], token_length: 15
 ```
