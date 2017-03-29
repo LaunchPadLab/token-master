@@ -1,8 +1,8 @@
 require 'rails/generators/active_record'
 
-module TokenMaster
+module Rails
   module Generators
-    class MigrationGenerator < ActiveRecord::Generators::Base
+    class TokenMasterGenerator < ActiveRecord::Generators::Base
       desc 'Creates a TokenMaster migration for the specified model.'
 
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
