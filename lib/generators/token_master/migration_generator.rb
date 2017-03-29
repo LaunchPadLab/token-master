@@ -3,7 +3,7 @@ require 'rails/generators/migration'
 
 module TokenMaster
   module Generators
-    class TokenMasterGenerator < Rails::Generators::NamedBase
+    class MigrationGenerator < Rails::Generators::NamedBase
       namespace 'token_master'
       source_root File.expand_path('../templates', __FILE__)
 

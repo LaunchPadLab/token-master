@@ -11,14 +11,14 @@ module TokenMaster
         copy_file 'initializer.rb', 'config/initializers/token_master.rb'
       end
 
-      # def add_options
-      #   attributes_names.each do |tokenable|
-      #     inject_into_file 'config/initializers/token_master.rb', before: 'end' do <<-'RUBY'
-      #     # config.add_tokenable_options :#{tokenable}, #{TokenMaster::Config::DEFAULT_VALUES}
-      #     RUBY
-      #     end
-      #   end
-      # end
+      def add_options
+        attributes.each do |tokenable|
+          inject_into_file 'config/initializers/token_master.rb', before: 'end' do <<-RUBY
+  config.add_tokenable_options '#{tokenable}'.to_sym, TokenMaster::Config::DEFAULT_VALUES
+          RUBY
+          end
+        end
+      end
     end
   end
 end

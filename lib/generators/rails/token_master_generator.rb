@@ -16,7 +16,7 @@ module Rails
       end
 
       def migration_name
-        "add_token_master_to_#{name.underscore.pluralize}"
+        "add_#{attributes_names[0]}_tokenable_to_#{name.underscore.pluralize}"
       end
 
       def migration_class_name
