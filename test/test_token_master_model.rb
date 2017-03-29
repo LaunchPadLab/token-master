@@ -443,7 +443,7 @@ describe TokenMaster::Model do
           assert_in_delta forced_model.reset_completed_at, Time.now, 1
         end
 
-        describe 'udpates required fields if needed' do
+        describe 'updates required fields if needed' do
           it 'updates the password field if reset' do
             forced_model = TM.force_tokenable!(@model, 'reset', @params)
             assert_equal forced_model.password, @params[:password]

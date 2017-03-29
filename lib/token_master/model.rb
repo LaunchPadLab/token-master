@@ -12,7 +12,7 @@ module TokenMaster
         check_params! key, params
 
         model.update!(
-          params.merge!(completed_at_col(key) => Time.now)
+          params.merge(completed_at_col(key) => Time.now)
         )
         model
       end
@@ -22,7 +22,7 @@ module TokenMaster
         check_params! key, params
 
         model.update!(
-          params.merge!(completed_at_col(key) => Time.now)
+          params.merge(completed_at_col(key) => Time.now)
         )
         model
       end

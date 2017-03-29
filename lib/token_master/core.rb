@@ -17,7 +17,7 @@ module TokenMaster
           define_method("#{tokenable}_status") do
             TokenMaster::Model.status(self, tokenable)
           end
-          define_method("force_#{tokenable}") do |**params|
+          define_method("force_#{tokenable}!") do |**params|
             TokenMaster::Model.force_tokenable!(self, tokenable, **params)
           end
           # class methods
