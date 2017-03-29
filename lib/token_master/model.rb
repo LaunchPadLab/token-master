@@ -12,9 +12,18 @@ module TokenMaster
         check_params! key, params
 
         model.update!(
-          params.merge!(completed_at_col(key) => Time.now)
+          params.merge(completed_at_col(key) => Time.now)
         )
+        model
+      end
 
+      def force_tokenable!(model, key, **params)
+        check_manageable! model.class, key
+        check_params! key, params
+
+        model.update!(
+          params.merge(completed_at_col(key) => Time.now)
+        )
         model
       end
 
