@@ -1,6 +1,6 @@
 class <%= "#{migration_name.classify}" %> < <%= migration_class_name %>
   def change
-    <% attributes.each do |attribute| %>
+    <% attributes_names.each do |attribute| %>
       add_column :<%= name.tableize %>, <%= "#{attribute}_token".to_sym %>, :string, default: nil
       add_column :<%= name.tableize %>, <%= "#{attribute}_created_at".to_sym %>, :timestamp, default: nil
       add_column :<%= name.tableize %>, <%= "#{attribute}_sent_at".to_sym %>, :timestamp, default: nil
