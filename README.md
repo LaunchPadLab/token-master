@@ -56,7 +56,7 @@ This creates the following columns:
 ```
 bundle exec rails generate token_master:install
 ```
-This creates a config file for TokenMaster. The config file will include methods to add configurations for each tokenable, set to the default configurations. Configurations you can set include:
+This creates an initializer file for TokenMaster. The initializer will include methods to add configurations for each tokenable, set to the default configurations. Configurations you can set include:
 
 - Token Lifetime (`:token_lifetime`, takes an integer
 - Reuired Params (`:token_lifetime`), takes an array

@@ -14,7 +14,7 @@ module TokenMaster
       def add_options
         attributes.each do |tokenable|
           inject_into_file 'config/initializers/token_master.rb', before: 'end' do <<-RUBY
-  config.add_tokenable_options '#{tokenable}'.to_sym, TokenMaster::Config::DEFAULT_VALUES
+  config.add_tokenable_options :#{tokenable}, TokenMaster::Config::DEFAULT_VALUES
           RUBY
           end
         end
