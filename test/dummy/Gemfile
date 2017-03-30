@@ -9,7 +9,8 @@ gem 'rails', '~> 5.0.2'
 gem 'pg', '~> 0.18'
 # gem 'puma', '~> 3.0'
 gem 'bcrypt', '~> 3.1.7'
-gem 'token_master', git: 'https://github.com/LaunchPadLab/token-master', branch: 'update-generators'
+gem 'token_master', path: './../..'
+gem 'faker'
 
 group :development, :test do
   gem 'byebug', platform: :mri

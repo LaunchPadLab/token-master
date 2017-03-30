@@ -14,4 +14,3 @@ require 'token_master/error'
 require 'token_master/core'
 require 'token_master/model'
 require 'token_master/version'
-# require 'token_master/railtie' if defined?(::Rails)
