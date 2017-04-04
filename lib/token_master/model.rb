@@ -92,7 +92,7 @@ module TokenMaster
         end
 
         def check_manageable!(klass, key)
-          raise Error, "#{klass} not #{key}able" unless manageable?(klass, key)
+          raise NotTokenable, "#{klass} not #{key}able" unless manageable?(klass, key)
         end
 
         def manageable?(klass, key)
@@ -107,20 +107,20 @@ module TokenMaster
         end
 
         def check_configs_set!(key)
-          raise Error, 'You have not set the configurations for this tokenable.' unless TokenMaster.config.options_set?(key.to_sym)
+          raise NotConfigured, 'You have not set the configurations for this tokenable.' unless TokenMaster.config.options_set?(key.to_sym)
         end
 
         def check_params!(key, params)
           required_params = TokenMaster.config.get_required_params(key.to_sym)
-          raise Error, 'You did not pass in the required params for this tokenable' unless required_params.all? do |key|
+          raise MissingRequiredParams, 'You did not pass in the required params for this tokenable' unless required_params.all? do |key|
             params.keys.include? key
           end
         end
 
         def check_token_active!(model, key)
-          raise Error, "#{key} token not found" unless model
-          raise Error, "#{key} already completed" if completed?(model, key)
-          raise Error, "#{key} token expired" unless token_active?(model, key)
+          raise TokenNotFound, "#{key} token not found" unless model
+          raise TokenCompleted, "#{key} already completed" if completed?(model, key)
+          raise TokenExpired, "#{key} token expired" unless token_active?(model, key)
         end
 
         def token_active?(model, key)
@@ -130,7 +130,7 @@ module TokenMaster
         end
 
         def check_instructions_sent!(model, key)
-          raise Error, "#{key} already sent" if instructions_sent?(model, key)
+          raise TokenSent, "#{key} already sent" if instructions_sent?(model, key)
         end
 
         def instructions_sent?(model, key)
@@ -142,7 +142,7 @@ module TokenMaster
         end
 
         def check_token_set!(model, key)
-          raise Error, "#{key}_token not set" unless token_set?(model, key)
+          raise TokenNotSent, "#{key}_token not set" unless token_set?(model, key)
         end
 
         def completed?(model, key)
@@ -150,7 +150,7 @@ module TokenMaster
         end
 
         def check_completed!(model, key)
-          raise Error, "#{key} not completed" unless completed?(model, key)
+          raise TokenNotCompleted, "#{key} not completed" unless completed?(model, key)
         end
 
         def generate_token(length)
