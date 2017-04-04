@@ -26,6 +26,6 @@ module TokenMaster
   class TokenSent < Error
   end
 
-  class TokenNotSent < Error
+  class TokenNotSet < Error
   end
 end

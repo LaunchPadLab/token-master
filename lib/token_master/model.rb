@@ -142,7 +142,7 @@ module TokenMaster
         end
 
         def check_token_set!(model, key)
-          raise TokenNotSent, "#{key}_token not set" unless token_set?(model, key)
+          raise TokenNotSet, "#{key}_token not set" unless token_set?(model, key)
         end
 
         def completed?(model, key)
