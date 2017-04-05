@@ -19,7 +19,7 @@ describe TokenMaster::Core do
 
   describe 'calls methods correctly' do
     describe 'class methods' do
-      it '#do_by_token' do
+      it '.do_by_token' do
         token = 'foo'
         TokenMaster::Model.stub :do_by_token!, :foo do
           assert_equal @bar.confirm_by_token!(token), :foo
