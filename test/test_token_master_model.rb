@@ -98,21 +98,6 @@ Time.include CoreExtensions::Time
 String.include CoreExtensions::String
 NilClass.include CoreExtensions::Nil
 
-describe TokenMaster::Config do
-  it 'has defaults' do
-    assert TokenMaster::Config::DEFAULT_VALUES[:token_lifetime]
-    assert TokenMaster::Config::DEFAULT_VALUES[:required_params]
-    assert TokenMaster::Config::DEFAULT_VALUES[:token_length]
-  end
-
-  it 'can be set' do
-    config = TokenMaster::Config.new
-    confirm_token_lifetime = 19
-    config.add_tokenable_options(:confirm, token_lifetime: 19)
-    assert_equal config.get_token_lifetime(:confirm), confirm_token_lifetime
-  end
-end
-
 TM = TokenMaster::Model
 
 describe TokenMaster::Model do
