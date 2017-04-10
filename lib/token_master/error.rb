@@ -1,31 +1,33 @@
 module TokenMaster
-  class Error < StandardError
-  end
 
-  class NotTokenable < Error
-  end
+  # The base class for all errors raised by TokenMaster
+  class Error < StandardError; end
 
-  class NotConfigured < Error
-  end
+  # Raised when the attributes for a tokenable do not exist.
+  # This could result from a migration not being run or a spelling error
+  class NotTokenable < Error; end
 
-  class MissingRequiredParams < Error
-  end
+  # TODO
+  class NotConfigured < Error; end
 
-  class TokenNotFound < Error
-  end
+  # TODO
+  class MissingRequiredParams < Error; end
 
-  class TokenCompleted < Error
-  end
+  # TODO
+  class TokenNotFound < Error; end
 
-  class TokenNotCompleted < Error
-  end
+  # TODO
+  class TokenCompleted < Error; end
 
-  class TokenExpired < Error
-  end
+  # TODO
+  class TokenNotCompleted < Error; end
 
-  class TokenSent < Error
-  end
+  # TODO
+  class TokenExpired < Error; end
 
-  class TokenNotSet < Error
-  end
+  # TODO
+  class TokenSent < Error; end
+
+  # TODO
+  class TokenNotSet < Error; end
 end
