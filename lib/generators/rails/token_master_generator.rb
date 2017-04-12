@@ -27,7 +27,10 @@ module Rails
         end
       end
 
-      # check if initializer exists, if not copy over
+      def install_generator
+        Rails::Generators.invoke("token_master:install", attributes_names)
+      end
+
       def migration_file_name
         "#{migration_name}.rb"
       end

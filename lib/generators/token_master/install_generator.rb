@@ -8,7 +8,7 @@ module TokenMaster
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
 
       def copy_initializer
-        copy_file 'initializer.rb', 'config/initializers/token_master.rb'
+        copy_file 'initializer.rb', 'config/initializers/token_master.rb', skip: true
       end
 
       def add_options
