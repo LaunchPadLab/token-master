@@ -69,9 +69,8 @@ class MockTokenMaster < MockActiveRecord
   end
 
   def update!(**kwargs)
-    model = MockTokenMaster.new
-    kwargs.each { |k, v| model.send("#{k}=", v) }
-    model
+    kwargs.each { |k, v| self.send("#{k}=", v) }
+    self
   end
 end
 
@@ -98,21 +97,6 @@ end
 Time.include CoreExtensions::Time
 String.include CoreExtensions::String
 NilClass.include CoreExtensions::Nil
-
-describe TokenMaster::Config do
-  it 'has defaults' do
-    assert TokenMaster::Config::DEFAULT_VALUES[:token_lifetime]
-    assert TokenMaster::Config::DEFAULT_VALUES[:required_params]
-    assert TokenMaster::Config::DEFAULT_VALUES[:token_length]
-  end
-
-  it 'can be set' do
-    config = TokenMaster::Config.new
-    confirm_token_lifetime = 19
-    config.add_tokenable_options(:confirm, token_lifetime: 19)
-    assert_equal config.get_token_lifetime(:confirm), confirm_token_lifetime
-  end
-end
 
 TM = TokenMaster::Model
 
@@ -143,13 +127,13 @@ describe TokenMaster::Model do
 
   describe '#check_manageable!' do
     it 'anything' do
-      assert_raises TokenMaster::Error do
+      assert_raises TokenMaster::NotTokenable do
         TM.send(:check_manageable!, String, String)
       end
     end
 
     it 'active record' do
-      assert_raises TokenMaster::Error do
+      assert_raises TokenMaster::NotTokenable do
         TM.send(:check_manageable!, MockActiveRecord, 'confirm')
       end
     end
@@ -161,7 +145,7 @@ describe TokenMaster::Model do
 
   describe '#check_configs_set!' do
     it 'configs not set' do
-      assert_raises TokenMaster::Error do
+      assert_raises TokenMaster::NotConfigured do
         TM.send(:check_configs_set!, 'foo')
       end
     end
@@ -192,7 +176,7 @@ describe TokenMaster::Model do
     end
 
     it 'when not set' do
-      assert_raises TokenMaster::Error do
+      assert_raises TokenMaster::TokenNotSet do
         TM.send(:check_token_set!, @manageable_model, 'confirm')
       end
     end
@@ -236,7 +220,7 @@ describe TokenMaster::Model do
     end
 
     it 'when token not active' do
-      assert_raises TokenMaster::Error do
+      assert_raises TokenMaster::TokenExpired do
         TM.send(:check_token_active!, @manageable_model, 'confirm')
       end
     end
@@ -274,7 +258,7 @@ describe TokenMaster::Model do
 
     it 'when sent' do
       @manageable_model.confirm_sent_at = Time.now - (7 * days)
-      assert_raises TokenMaster::Error do
+      assert_raises TokenMaster::TokenSent do
         TM.send(:check_instructions_sent!, @manageable_model, 'confirm')
       end
     end
@@ -287,7 +271,7 @@ describe TokenMaster::Model do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::Error do
+        assert_raises TokenMaster::NotTokenable do
           TM.set_token!(@model, 'confirm')
         end
       end
@@ -300,7 +284,7 @@ describe TokenMaster::Model do
 
       describe 'when configs not set' do
         it 'raises' do
-          assert_raises TokenMaster::Error do
+          assert_raises TokenMaster::NotConfigured do
             TM.set_token!(@model, 'invite')
           end
         end
@@ -352,7 +336,7 @@ describe TokenMaster::Model do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::Error do
+        assert_raises TokenMaster::NotTokenable do
           TM.do_by_token!(@klass, @key, @token)
         end
       end
@@ -365,7 +349,7 @@ describe TokenMaster::Model do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::Error do
+        assert_raises TokenMaster::TokenExpired do
           TM.do_by_token!(@klass, 'confirm', @token)
         end
       end
@@ -380,7 +364,7 @@ describe TokenMaster::Model do
 
       describe 'when required params not present' do
         it 'raises' do
-          assert_raises TokenMaster::Error do
+          assert_raises TokenMaster::MissingRequiredParams do
             TM.do_by_token!(@klass, 'reset', @token, { password: @new_password })
           end
         end
@@ -397,10 +381,57 @@ describe TokenMaster::Model do
           assert_in_delta model.confirm_completed_at, Time.now, 1
         end
 
-        describe 'udpates required fields if set' do
+        describe 'updates required fields if needed' do
           it 'updates the password field if reset' do
             model = TM.do_by_token!(@klass, 'reset', @token, {password: @new_password, password_confirmation: @new_password})
             assert_equal model.password, @new_password
+          end
+        end
+      end
+    end
+  end
+
+  describe '#force_tokenable!' do
+    describe 'when not manageable' do
+      it 'raises' do
+        assert_raises TokenMaster::NotTokenable do
+          not_manageable = MockActiveRecord.new
+          TM.force_tokenable!(not_manageable, 'confirm')
+        end
+      end
+    end
+
+    describe 'when manageable' do
+      describe 'when not required params' do
+        it 'raises' do
+          model = MockTokenMaster.new
+          params = { password: 'password' }
+          assert_raises TokenMaster::MissingRequiredParams do
+            TM.force_tokenable!(model, 'reset', params)
+          end
+        end
+      end
+
+      describe 'when required params' do
+        before do
+          @model = MockTokenMaster.new
+          @params = { password: 'password', password_confirmation: 'password' }
+        end
+
+        it 'returns the model' do
+          forced_model = TM.force_tokenable!(@model, 'reset', @params)
+          assert_instance_of MockTokenMaster, forced_model
+        end
+
+        it 'sets the reset completed at time to now' do
+          forced_model = TM.force_tokenable!(@model, 'reset', @params)
+          assert_in_delta forced_model.reset_completed_at, Time.now, 1
+        end
+
+        describe 'updates required fields if needed' do
+          it 'updates the password field if reset' do
+            forced_model = TM.force_tokenable!(@model, 'reset', @params)
+            assert_equal forced_model.password, @params[:password]
           end
         end
       end
@@ -428,7 +459,7 @@ describe TokenMaster::Model do
     end
 
     it 'when not completed' do
-      assert_raises TokenMaster::Error do
+      assert_raises TokenMaster::TokenNotCompleted do
         TM.send(:check_completed!, @manageable_model, 'confirm')
       end
     end
@@ -446,7 +477,7 @@ describe TokenMaster::Model do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::Error do
+        assert_raises TokenMaster::NotTokenable do
           TM.send_instructions!(@model, 'confirm')
         end
       end
@@ -458,7 +489,7 @@ describe TokenMaster::Model do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::Error do
+        assert_raises TokenMaster::TokenNotSet do
           TM.send_instructions!(@model, 'confirm')
         end
       end
@@ -472,7 +503,7 @@ describe TokenMaster::Model do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::Error do
+        assert_raises TokenMaster::TokenSent do
           TM.send_instructions!(@model, 'confirm')
         end
       end
@@ -509,7 +540,7 @@ describe TokenMaster::Model do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::Error do
+        assert_raises TokenMaster::NotTokenable do
           TM.do_by_token!(@klass, @key, @token)
         end
       end
