@@ -60,7 +60,7 @@ This command also creates or updates the TokenMaster initializer file. The initi
 - Token Length(`:token_length`), takes an integer
 
 ```
-config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES'
+config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES
 
 ## OR
 
