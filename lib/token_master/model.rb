@@ -29,7 +29,6 @@ module TokenMaster
 
       def set_token!(model, key, token_length = nil)
         check_manageable! model.class, key
-        check_configs_set! key
         token_length ||= TokenMaster.config.get_token_length(key.to_sym)
         token = generate_token token_length
 
@@ -104,10 +103,6 @@ module TokenMaster
             #{key}_completed_at
             #{key}_sent_at
           ).all? { |attr| column_names.include? attr }
-        end
-
-        def check_configs_set!(key)
-          raise NotConfigured, 'You have not set the configurations for this tokenable.' unless TokenMaster.config.options_set?(key.to_sym)
         end
 
         def check_params!(key, params)

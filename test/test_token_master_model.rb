@@ -143,18 +143,6 @@ describe TokenMaster::Model do
     end
   end
 
-  describe '#check_configs_set!' do
-    it 'configs not set' do
-      assert_raises TokenMaster::NotConfigured do
-        TM.send(:check_configs_set!, 'foo')
-      end
-    end
-
-    it 'configs set' do
-      assert_nil TM.send(:check_configs_set!, 'confirm')
-    end
-  end
-
   describe '#token_set?' do
     before do
       @manageable_model = MockTokenMaster.new
@@ -280,14 +268,6 @@ describe TokenMaster::Model do
     describe 'when manageable' do
       before do
         @model = MockTokenMaster.new
-      end
-
-      describe 'when configs not set' do
-        it 'raises' do
-          assert_raises TokenMaster::NotConfigured do
-            TM.set_token!(@model, 'invite')
-          end
-        end
       end
 
       describe 'when configs set' do
