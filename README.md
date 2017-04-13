@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/LaunchPadLab/token-master.svg?branch=master)](https://travis-ci.org/LaunchPadLab/token-master)
+
 # token-master
 User management logic using tokens
 
@@ -65,7 +67,7 @@ This creates a config file for TokenMaster. The config file will include methods
 ```
 config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES'
 
-## OR 
+## OR
 
 config.add_tokenable_options :reset, token_lifetime: 1, required_params: [:password, :password_confirmation], token_length: 15
 ```
