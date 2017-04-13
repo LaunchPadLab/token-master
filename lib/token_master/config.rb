@@ -36,7 +36,6 @@ module TokenMaster
 
       def get_option(key, option)
         @options.dig([key, option]) || DEFAULT_VALUES[option]
-        # option = @options.dig([key, option]) ? @options.dig([key, option]) : DEFAULT_VALUES[option]
         # @options[key] ? @options[key].fetch(option, DEFAULT_VALUES[option]) : DEFAULT_VALUES[option]
       end
   end
