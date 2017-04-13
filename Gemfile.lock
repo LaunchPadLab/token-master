@@ -6,12 +6,16 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    minitest (5.10.1)
+    rake (10.4.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  minitest (~> 5.10.1)
+  rake (~> 10.4.2)
   token_master!
 
 BUNDLED WITH
-   1.12.5
+   1.14.5

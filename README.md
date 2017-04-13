@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/LaunchPadLab/token-master.svg?branch=master)](https://travis-ci.org/LaunchPadLab/token-master)
+
 # token-master
 User management logic using tokens
 
