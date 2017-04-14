@@ -35,10 +35,10 @@ User.foobar_by_token!(token)
 ## Setup
 
 ```
-bundle exec rails generate token_master:model User confirm foobar
+bundle exec rails generate token_master User confirm foobar
 ```
 
-This creates the following columns:
+This creates a migration file for the following columns:
 ```
     add_column :users, :confirm_token, :string, default: nil
     add_column :users, :confirm_created_at, :timestamp, default: nil
@@ -55,17 +55,14 @@ This creates the following columns:
     add_index :users, :foobar_token
 ```
 
-```
-bundle exec rails generate token_master:install
-```
-This creates a config file for TokenMaster. The config file will include methods to add configurations for each tokenable, set to the default configurations. Configurations you can set include:
+This command also creates or updates the TokenMaster initializer file. The initializer will include methods to add configurations for each tokenable, set to the default configurations. Configurations you can set include:
 
 - Token Lifetime (`:token_lifetime`, takes an integer
 - Reuired Params (`:token_lifetime`), takes an array
 - Token Length(`:token_length`), takes an integer
 
 ```
-config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES'
+config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES
 
 ## OR
 
