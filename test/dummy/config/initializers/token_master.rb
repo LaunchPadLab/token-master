@@ -27,4 +27,7 @@ TokenMaster.config do |config|
   # }
 
   #### METHODS FOR YOUR CONFIGURATION BELOW ###
+  config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES
+  config.add_tokenable_options :invite, token_lifetime: 10, required_params: [:password, :password_confirmation], token_length: 15
+  config.add_tokenable_options :reset, token_lifetime: 1, required_params: [:password, :password_confirmation], token_length: 15
 end
