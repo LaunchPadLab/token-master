@@ -11,6 +11,7 @@ gem 'pg', '~> 0.18'
 gem 'bcrypt', '~> 3.1.7'
 gem 'token_master', path: './../..'
 gem 'faker'
+gem 'pry'
 
 group :development, :test do
   gem 'byebug', platform: :mri

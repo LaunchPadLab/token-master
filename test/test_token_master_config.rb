@@ -15,15 +15,25 @@ describe TokenMaster::Config do
     assert_equal config.get_token_lifetime(:confirm), confirm_token_lifetime
   end
 
-  it 'returns values' do
+  describe 'returns values' do
     config = TokenMaster::Config.new
-    config.add_tokenable_options(:confirm, TokenMaster::Config::DEFAULT_VALUES)
-    assert_equal config.get_required_params(:confirm), TokenMaster::Config::DEFAULT_VALUES[:required_params]
-    assert_equal config.get_token_lifetime(:confirm), TokenMaster::Config::DEFAULT_VALUES[:token_lifetime]
-    assert_equal config.get_token_length(:confirm), TokenMaster::Config::DEFAULT_VALUES[:token_length]
+
+    it 'when configs set' do
+      config.add_tokenable_options(:reset, token_lifetime: 1, required_params: [:password, :password_confirmation], token_length: 15)
+      assert_equal config.get_token_lifetime(:reset), 1
+      assert_equal config.get_required_params(:reset), [:password, :password_confirmation]
+      assert_equal config.get_token_length(:reset), 15
+    end
+
+    it 'when configs not set' do
+      config.add_tokenable_options(:invite, {})
+      assert_equal config.get_required_params(:invite), TokenMaster::Config::DEFAULT_VALUES[:required_params]
+      assert_equal config.get_token_lifetime(:invite), TokenMaster::Config::DEFAULT_VALUES[:token_lifetime]
+      assert_equal config.get_token_length(:invite), TokenMaster::Config::DEFAULT_VALUES[:token_length]
+    end
   end
 
-  describe 'confirms options' do
+  describe 'confirms options set' do
     before do
       @config = TokenMaster::Config.new
       @config.add_tokenable_options(:confirm, TokenMaster::Config::DEFAULT_VALUES)
