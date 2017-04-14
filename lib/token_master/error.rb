@@ -5,9 +5,6 @@ module TokenMaster
   class NotTokenable < Error
   end
 
-  class NotConfigured < Error
-  end
-
   class MissingRequiredParams < Error
   end
 
