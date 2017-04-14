@@ -8,6 +8,7 @@ GEM
   specs:
     minitest (5.10.1)
     rake (10.4.2)
+    yard (0.9.8)
 
 PLATFORMS
   ruby
@@ -16,6 +17,7 @@ DEPENDENCIES
   minitest (~> 5.10.1)
   rake (~> 10.4.2)
   token_master!
+  yard
 
 BUNDLED WITH
    1.14.5
