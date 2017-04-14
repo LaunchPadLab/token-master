@@ -9,6 +9,9 @@ module TokenMaster
   class NotTokenable < Error
   end
 
+  class NotConfigured < Error
+  end
+
   # Raised when the required parameters for a tokenable are not provided.
   # This typically happens with reset and invite tokenables, that might require both `password` and `password_confirmation` fields,
   # but only one is provided to the method
