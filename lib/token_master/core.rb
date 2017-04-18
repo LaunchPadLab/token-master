@@ -33,7 +33,6 @@ module TokenMaster
       # TODO
       def set_token!(model, key, token_length = nil)
         check_manageable! model.class, key
-        check_configs_set! key
         token_length ||= TokenMaster.config.get_token_length(key.to_sym)
         token = generate_token token_length
 
@@ -112,10 +111,6 @@ module TokenMaster
           ).all? { |attr| column_names.include? attr }
         end
 
-        def check_configs_set!(key)
-          raise NotConfigured, 'You have not set the configurations for this tokenable.' unless TokenMaster.config.options_set?(key.to_sym)
-        end
-
         def check_params!(key, params)
           required_params = TokenMaster.config.get_required_params(key.to_sym)
           raise MissingRequiredParams, 'You did not pass in the required params for this tokenable' unless required_params.all? do |k|
@@ -153,10 +148,6 @@ module TokenMaster
 
         def completed?(model, key)
           model.send(completed_at_col(key)).present?
-        end
-
-        def check_completed!(model, key)
-          raise TokenNotCompleted, "#{key} not completed" unless completed?(model, key)
         end
 
         def generate_token(length)

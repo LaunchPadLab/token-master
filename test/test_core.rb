@@ -145,18 +145,6 @@ describe TokenMaster::Core do
     end
   end
 
-  describe '#check_configs_set!' do
-    it 'configs not set' do
-      assert_raises TokenMaster::NotConfigured do
-        TM.send(:check_configs_set!, 'foo')
-      end
-    end
-
-    it 'configs set' do
-      assert_nil TM.send(:check_configs_set!, 'confirm')
-    end
-  end
-
   describe '#token_set?' do
     before do
       @manageable_model = MockTokenMaster.new
@@ -284,45 +272,35 @@ describe TokenMaster::Core do
         @model = MockTokenMaster.new
       end
 
-      describe 'when configs not set' do
-        it 'raises' do
-          assert_raises TokenMaster::NotConfigured do
-            TM.set_token!(@model, 'invite')
-          end
-        end
+      it 'sets the token to the configured length' do
+        TM.set_token! @model, 'confirm'
+        assert_equal @model.confirm_token.length, TokenMaster.config.get_token_length(:confirm)
       end
 
-      describe 'when configs set' do
-        it 'sets the token to the configured length' do
-          TM.set_token! @model, 'confirm'
-          assert_equal @model.confirm_token.length, TokenMaster.config.get_token_length(:confirm)
-        end
+      it 'sets confirm created at time to now' do
+        TM.set_token! @model, 'confirm'
+        assert @model.confirm_created_at, Time.now
+      end
 
-        it 'sets confirm created at time to now' do
-          TM.set_token! @model, 'confirm'
-          assert @model.confirm_created_at, Time.now
-        end
+      it 'sets confirmed completed at time to nil' do
+        TM.set_token! @model, 'confirm'
+        assert_nil @model.confirm_completed_at
+      end
 
-        it 'sets confirmed completed at time to nil' do
-          TM.set_token! @model, 'confirm'
-          assert_nil @model.confirm_completed_at
-        end
+      it 'sets confirm sent at time to nil' do
+        TM.set_token! @model, 'confirm'
+        assert_nil @model.confirm_sent_at
+      end
 
-        it 'sets confirm sent at time to nil' do
-          TM.set_token! @model, 'confirm'
-          assert_nil @model.confirm_sent_at
-        end
+      it 'returns the token' do
+        token = TM.set_token! @model, 'confirm'
+        assert_equal token, @model.confirm_token
+      end
 
-        it 'returns the token' do
-          token = TM.set_token! @model, 'confirm'
-          assert_equal token, @model.confirm_token
-        end
-
-        describe 'when token length is provided' do
-          it 'sets the token to the provided length' do
-            TM.set_token! @model, 'confirm', 40
-            assert_equal @model.confirm_token.length, 40
-          end
+      describe 'when token length is provided' do
+        it 'sets the token to the provided length' do
+          TM.set_token! @model, 'confirm', 40
+          assert_equal @model.confirm_token.length, 40
         end
       end
     end
@@ -452,23 +430,6 @@ describe TokenMaster::Core do
     it 'when completed' do
       @manageable_model.confirm_completed_at = Time.now
       assert TM.send(:completed?, @manageable_model, 'confirm')
-    end
-  end
-
-  describe '#check_completed!' do
-    before do
-      @manageable_model = MockTokenMaster.new
-    end
-
-    it 'when not completed' do
-      assert_raises TokenMaster::TokenNotCompleted do
-        TM.send(:check_completed!, @manageable_model, 'confirm')
-      end
-    end
-
-    it 'when completed' do
-      @manageable_model.confirm_completed_at = Time.now
-      assert_nil TM.send(:check_completed!, @manageable_model, 'confirm')
     end
   end
 
