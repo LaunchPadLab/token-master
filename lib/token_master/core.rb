@@ -5,7 +5,20 @@ module TokenMaster
   # TODO
   module Core
     class << self
-      # TODO
+
+      # Completes the token action for a tokenable instance using a token, setting `tokenable_completed_at` to the time at completion
+
+      # @param klass [Object] the tokenable Class
+      # @param key [String, Symbol] the tokenable
+      # @param token [String] the tokenable's token used to complete the action
+      # @param **params [Symbol=>String] keyword arguments required to complet the tokenable action
+
+      # @raise [NotTokenableError] if the provided Class does not have the correct tokenable column
+      # @raise [TokenNotFoundError] if a tokenable instance cannot be found by the given token
+      # @raise [TokenCompletedError] if the tokenable action has already been completed, i.e., the tokenable instance has a timestamp in `tokenable_completed_at`
+      # @raise [TokenExpiredError] if the token is expired, i.e., the date is beyond the token's `created_at` plus `token_lifetime`
+      # @raise [MissingRequiredParamsError] if the params required by a tokenable are not provided
+      # @return [Object] tokenable Class instance
       def do_by_token!(klass, key, token, **params)
         check_manageable! klass, key
         token_column = { token_col(key) => token }
@@ -19,7 +32,16 @@ module TokenMaster
         model
       end
 
-      # TODO
+      # Completes the token action for a tokenable instance _without_ a token, setting the `tokenable_completed_at` to the time at completion
+      # Usually implemented when you want to complete multiple tokenable actions at once, e.g., a user completes the invite action by setting up passwords, by default also completes the confirm action
+
+      # @param model [Object] the tokenable model instance
+      # @param key [String, Symbol] the tokenable action
+      # @param **params [Symbol=>String] keyword arguments required to complete the tokenable action
+
+      # @raise [NotTokenableError] if the provided Class does not have the correct tokenable column
+      # @raise [MissingRequiredParamsError] if the params required by a tokenable are not provided
+      # @return [Object] tokenable Class instance
       def force_tokenable!(model, key, **params)
         check_manageable! model.class, key
         check_params! key, params
@@ -30,7 +52,14 @@ module TokenMaster
         model
       end
 
-      # TODO
+      # Generates a tokenable action token, sets the token and the time of creation on the tokenable model instance
+
+      # @param model [Object] the tokenable model instance
+      # @param key [String, Symbol] the tokenable action
+      # @param token_length [Integer] the length of the generated token, default value is nil and method will use configuration token_length if not provided otherwise
+
+      # @raise [NotTokenableError] if the provided Class does not have the correct tokenable column
+      # @return [String] token
       def set_token!(model, key, token_length = nil)
         check_manageable! model.class, key
         token_length ||= TokenMaster.config.get_token_length(key.to_sym)
@@ -46,7 +75,15 @@ module TokenMaster
         token
       end
 
-      # TODO
+      # Accepts a block to pass on a generated token through a block, such as a mailer method, and sets `tokenable_sent_at` to the time the method is called
+
+      # @param model [Object] the tokenable model instance
+      # @param key [String, Symbol] the tokenable action
+
+      # @raise [NotTokenableError] if the provided Class does not have the correct tokenable column
+      # @raise [TokenNotSetError] if the tokenable model instance does not have a token for the tokenable action
+      # @raise [TokenSentError] if this has already been called for the instance and tokenable action, i.e., `tokenable_sent_at` is not `nil`
+      # @return [Object] tokenable model instance
       def send_instructions!(model, key)
         check_manageable! model.class, key
         check_token_set! model, key
@@ -58,7 +95,13 @@ module TokenMaster
         model.save(validate: false)
       end
 
-      # TODO
+      # Provides the status of the tokenable action, whether the action has been completed, the token has been sent, the token is expired, or the token has only been created
+
+      # @param model [Object] the tokenable model instance
+      # @param key [String, Symbol] the tokenable action
+
+      # @raise [NotTokenableError] if the provided Class does not have the correct tokenable column
+      # @return [String] status of the tokenable action
       def status(model, key)
         check_manageable! model.class, key
         return 'completed' if completed?(model, key)
