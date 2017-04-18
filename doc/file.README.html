@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.9.8
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "README";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="file_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><div id='filecontents'>
+<p><a href="https://travis-ci.org/LaunchPadLab/token-master"><img
+src="https://travis-ci.org/LaunchPadLab/token-master.svg?branch=master"></a></p>
+
+<h1 id="label-token-master">token-master</h1>
+
+<p>User management logic using tokens</p>
+
+<h2 id="label-Usage">Usage</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>User</span> <span class='op'>&lt;</span> <span class='const'>ApplicationRecord</span>
+  <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="TokenMaster.html" title="TokenMaster (module)">TokenMaster</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="TokenMaster/Core.html" title="TokenMaster::Core (module)">Core</a></span></span>
+
+  <span class='id identifier rubyid_token_master'>token_master</span> <span class='symbol'>:confirm</span><span class='comma'>,</span> <span class='symbol'>:foobar</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<pre class="code ruby"><code class="ruby">## For confirm
+
+user = User.confirm_by_token!(token, **kwargs)
+
+token = user.set_confirm_token!
+
+user.send_confirm_instructions!
+
+user.confirm_status
+
+
+## Same for foobar
+
+User.foobar_by_token!(token)
+
+...</code></pre>
+
+<h2 id="label-Setup">Setup</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_bundle'>bundle</span> <span class='id identifier rubyid_exec'>exec</span> <span class='id identifier rubyid_rails'>rails</span> <span class='id identifier rubyid_generate'>generate</span> <span class='id identifier rubyid_token_master'>token_master</span> <span class='const'>User</span> <span class='id identifier rubyid_confirm'>confirm</span> <span class='id identifier rubyid_foobar'>foobar</span>
+</code></pre>
+
+<p>This creates a migration file for the following columns: “`  add_column
+:users, :confirm_token, :string, default: nil  add_column :users,
+:confirm_created_at, :timestamp, default: nil  add_column :users,
+:confirm_completed_at, :timestamp, default: nil  add_column :users,
+:confirm_sent_at, :timestamp, default: nil</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_add_index'>add_index</span> <span class='symbol'>:users</span><span class='comma'>,</span> <span class='symbol'>:confirm_token</span>
+
+<span class='id identifier rubyid_add_column'>add_column</span> <span class='symbol'>:users</span><span class='comma'>,</span> <span class='symbol'>:foobar_token</span><span class='comma'>,</span> <span class='symbol'>:string</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='kw'>nil</span>
+<span class='id identifier rubyid_add_column'>add_column</span> <span class='symbol'>:users</span><span class='comma'>,</span> <span class='symbol'>:foobar_created_at</span><span class='comma'>,</span> <span class='symbol'>:timestamp</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='kw'>nil</span>
+<span class='id identifier rubyid_add_column'>add_column</span> <span class='symbol'>:users</span><span class='comma'>,</span> <span class='symbol'>:foobar_completed_at</span><span class='comma'>,</span> <span class='symbol'>:timestamp</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='kw'>nil</span>
+<span class='id identifier rubyid_add_column'>add_column</span> <span class='symbol'>:users</span><span class='comma'>,</span> <span class='symbol'>:foobar_sent_at</span><span class='comma'>,</span> <span class='symbol'>:timestamp</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='kw'>nil</span>
+
+<span class='id identifier rubyid_add_index'>add_index</span> <span class='symbol'>:users</span><span class='comma'>,</span> <span class='symbol'>:foobar_token</span>
+</code></pre>
+
+<pre class="code ruby"><code class="ruby">
+This command also creates or updates the TokenMaster initializer file. The initializer will include methods to add configurations for each tokenable, set to the default configurations. Configurations you can set include:
+
+- Token Lifetime (`:token_lifetime`, takes an integer
+- Reuired Params (`:token_lifetime`), takes an array
+- Token Length(`:token_length`), takes an integer</code></pre>
+
+<p>config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES</p>
+
+<h2 id="label-OR">OR</h2>
+
+<p>config.add_tokenable_options :reset, token_lifetime: 1, required_params:
+[:password, :password_confirmation], token_length: 15 “`</p>
+</div></div>
+
+      <div id="footer">
+  Generated on Fri Apr 14 18:39:32 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.8 (ruby-2.3.0).
+</div>
+
+    </div>
+  </body>
+</html>
