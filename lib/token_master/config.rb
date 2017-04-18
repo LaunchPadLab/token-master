@@ -34,8 +34,8 @@ module TokenMaster
 
     private
 
-      def get_option(key, option)
-        @options[key].fetch(option, DEFAULT_VALUES[option])
-      end
+    def get_option(key, option)
+      @options.dig(key, option) || DEFAULT_VALUES[option]
+    end
   end
 end

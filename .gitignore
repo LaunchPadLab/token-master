@@ -1,3 +1,4 @@
 .DS_Store
-.yardoc
-doc
+token_master-*.gem
+Gemfile.lock
+coverage

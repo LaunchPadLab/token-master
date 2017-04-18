@@ -12,9 +12,10 @@ Gem::Specification.new do |s|
   s.email       = 'dave@launchpadlab.com'
   s.homepage    = 'https://github.com/launchpadlab/token-master'
   s.license     = 'MIT'
-  s.files       = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  s.files       = `git ls-files -z`
+                  .split("\x0")
+                  .reject { |f| f.match(%r{^(test|spec|features)/}) }
 
-  s.add_development_dependency "rake", "~> 10.4.2"
-  s.add_development_dependency "minitest", "~> 5.10.1"
-  s.add_development_dependency "yard"
+  s.add_development_dependency 'rake', '~> 10.4', '>= 10.4.2'
+  s.add_development_dependency 'minitest', '~> 5.10', '>= 5.10.1'
 end
