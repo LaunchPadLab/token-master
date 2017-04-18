@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/launchpadlab/token-master'
   s.license     = 'MIT'
   s.files       = `git ls-files -z`
-                  .split('\x0')
+                  .split("\x0")
                   .reject { |f| f.match(%r{^(test|spec|features)/}) }
 
   s.add_development_dependency 'rake', '~> 10.4.2'
