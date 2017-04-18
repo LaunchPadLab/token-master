@@ -1,4 +1,9 @@
+[![GitHub](http://img.shields.io/badge/github-launchpadlab/token_master-blue.svg)](http://github.com/launchpadlab/token_master)
+[![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/token_master)
+
+[![Gem Version](https://badge.fury.io/rb/token_master.svg)](https://badge.fury.io/rb/token_master)
 [![Build Status](https://travis-ci.org/LaunchPadLab/token-master.svg?branch=master)](https://travis-ci.org/LaunchPadLab/token-master)
+[![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
 
 # token-master
 User management logic using tokens
@@ -68,3 +73,6 @@ config.add_tokenable_options :confirm, TokenMaster::Config::DEFAULT_VALUES
 
 config.add_tokenable_options :reset, token_lifetime: 1, required_params: [:password, :password_confirmation], token_length: 15
 ```
+
+## Api Documentation
+[Rdoc](http://www.rubydoc.info/gems/token_master)
