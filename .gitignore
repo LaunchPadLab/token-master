@@ -1,3 +1,4 @@
 .DS_Store
 token_master-*.gem
 Gemfile.lock
+coverage
