@@ -18,14 +18,14 @@ CONFIRM_COLS = %w(
   invite_created_at
   invite_sent_at
   invite_completed_at
-)
+).freeze
 
 class MockActiveRecord
   def self.column_names
     []
   end
 
-  def self.find_by(**kwargs)
+  def self.find_by(**_kwargs)
     MockActiveRecord.new
   end
 
@@ -37,17 +37,17 @@ class MockActiveRecord
     kwargs.each { |k, v| send("#{k}=", v) }
   end
 
-  def update!(**kwargs)
+  def update!(**_kwargs)
     MockActiveRecord.new
   end
 
-  def save(**kwargs)
+  def save(**_kwargs)
     MockActiveRecord.new
   end
 end
 
 class MockTokenMaster < MockActiveRecord
-  attr_accessor *CONFIRM_COLS, :password, :password_confirmation
+  attr_accessor(*CONFIRM_COLS, :password, :password_confirmation)
 
   def self.column_names
     CONFIRM_COLS
@@ -98,16 +98,18 @@ Time.include CoreExtensions::Time
 String.include CoreExtensions::String
 NilClass.include CoreExtensions::Nil
 
-TM = TokenMaster::Model
+TM = TokenMaster::Core
 
-describe TokenMaster::Model do
+describe TokenMaster::Core do
   before do
     TokenMaster.config do |config|
       config.add_tokenable_options(:confirm, TokenMaster::Config::DEFAULT_VALUES)
-      config.add_tokenable_options(:reset,
+      config.add_tokenable_options(
+        :reset,
         token_lifetime: 2,
         required_params: [:password, :password_confirmation],
-        token_length: 20)
+        token_length: 20
+      )
     end
   end
 
@@ -140,6 +142,18 @@ describe TokenMaster::Model do
 
     it 'manageable' do
       assert_nil TM.send(:check_manageable!, MockTokenMaster, 'confirm')
+    end
+  end
+
+  describe '#check_configs_set!' do
+    it 'configs not set' do
+      assert_raises TokenMaster::NotConfigured do
+        TM.send(:check_configs_set!, 'foo')
+      end
+    end
+
+    it 'configs set' do
+      assert_nil TM.send(:check_configs_set!, 'confirm')
     end
   end
 
@@ -270,35 +284,45 @@ describe TokenMaster::Model do
         @model = MockTokenMaster.new
       end
 
-      it 'sets the token to the configured length' do
-        TM.set_token! @model, 'confirm'
-        assert_equal @model.confirm_token.length, TokenMaster.config.get_token_length(:confirm)
+      describe 'when configs not set' do
+        it 'raises' do
+          assert_raises TokenMaster::NotConfigured do
+            TM.set_token!(@model, 'invite')
+          end
+        end
       end
 
-      it 'sets confirm created at time to now' do
-        TM.set_token! @model, 'confirm'
-        assert @model.confirm_created_at, Time.now
-      end
+      describe 'when configs set' do
+        it 'sets the token to the configured length' do
+          TM.set_token! @model, 'confirm'
+          assert_equal @model.confirm_token.length, TokenMaster.config.get_token_length(:confirm)
+        end
 
-      it 'sets confirmed completed at time to nil' do
-        TM.set_token! @model, 'confirm'
-        assert_nil @model.confirm_completed_at
-      end
+        it 'sets confirm created at time to now' do
+          TM.set_token! @model, 'confirm'
+          assert @model.confirm_created_at, Time.now
+        end
 
-      it 'sets confirm sent at time to nil' do
-        TM.set_token! @model, 'confirm'
-        assert_nil @model.confirm_sent_at
-      end
+        it 'sets confirmed completed at time to nil' do
+          TM.set_token! @model, 'confirm'
+          assert_nil @model.confirm_completed_at
+        end
 
-      it 'returns the token' do
-        token = TM.set_token! @model, 'confirm'
-        assert_equal token, @model.confirm_token
-      end
+        it 'sets confirm sent at time to nil' do
+          TM.set_token! @model, 'confirm'
+          assert_nil @model.confirm_sent_at
+        end
 
-      describe 'when token length is provided' do
-        it 'sets the token to the provided length' do
-          TM.set_token! @model, 'confirm', 40
-          assert_equal @model.confirm_token.length, 40
+        it 'returns the token' do
+          token = TM.set_token! @model, 'confirm'
+          assert_equal token, @model.confirm_token
+        end
+
+        describe 'when token length is provided' do
+          it 'sets the token to the provided length' do
+            TM.set_token! @model, 'confirm', 40
+            assert_equal @model.confirm_token.length, 40
+          end
         end
       end
     end
