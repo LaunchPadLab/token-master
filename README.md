@@ -3,6 +3,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/token_master.svg)](https://badge.fury.io/rb/token_master)
 [![Build Status](https://travis-ci.org/LaunchPadLab/token-master.svg?branch=master)](https://travis-ci.org/LaunchPadLab/token-master)
+[![Test Coverage](https://codeclimate.com/github/LaunchPadLab/token-master/badges/coverage.svg)](https://codeclimate.com/github/LaunchPadLab/token-master/coverage)
 [![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
 
 # token-master
