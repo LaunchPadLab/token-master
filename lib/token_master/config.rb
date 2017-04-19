@@ -1,5 +1,5 @@
 module TokenMaster
-  # `TokenMaster::Config` manages the configuration options for tokenable actions. These can be set with the initializer provided with the generator, or default values will be used if options are not specified/
+  # `TokenMaster::Config` manages the configuration options for tokenable actions. These can be set with the initializer provided with the generator. Default values will be used if options are not specified
   class Config
 
     # Provides default values for a tokenable action
@@ -11,14 +11,14 @@ module TokenMaster
 
     attr_accessor :options
 
-    # Creates a new instance of TokenMaster::Config
+    # Creates a new instance of `TokenMaster::Config`
     def initialize
       @options = {}
     end
 
     # Sets the option parameters for the tokenable action
     # @param [Symbol] key the tokenable action
-    # @param [Symbol=>[Intger, String, Array]] params the option parameters
+    # @param [Symbol=>[Integer, String, Array]] params the option parameters
     def add_tokenable_options(key, **params)
       @options[key] = params
     end
@@ -41,7 +41,7 @@ module TokenMaster
       get_option(key, :token_length)
     end
 
-    # Determines whether option are provided for a tokenable action
+    # Determines whether options are provided for a tokenable action
     # @param [Symbol] key the tokenable action
     # @return [Boolean] `true` => options are set; `false` => options are not set
     def options_set?(key)
