@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email                 = ['dave@launchpadlab.com', 'ifat@launchpadlab.com']
   s.homepage              = 'https://github.com/launchpadlab/token-master'
   s.license               = 'MIT'
-  s.required_ruby_version = '> 2.3.0'
+  s.required_ruby_version = '>= 2.3.0'
   s.files                 = `git ls-files -z`
                             .split("\x0")
                             .reject { |f| f.match(%r{^(test|spec|features)/}) }
