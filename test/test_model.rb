@@ -37,7 +37,7 @@ describe TokenMaster::Model do
 
       it '#send_instructions!' do
         TokenMaster::Core.stub :send_instructions!, :foo do
-          assert_equal @tokenable_model.send_confirm_instructions!('foo'), :foo
+          assert_equal @tokenable_model.send_confirm_instructions! {'foo'}, :foo
         end
       end
 
