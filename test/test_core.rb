@@ -1,5 +1,4 @@
-require 'minitest/autorun'
-require 'token_master'
+require 'test_helper'
 
 def days(duration = 1)
   duration * 60 * 60 * 24
