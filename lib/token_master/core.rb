@@ -93,7 +93,7 @@ module TokenMaster
         end
 
         def required_params(key)
-          TokenMaster.config.required_params(key.to_sym)
+          TokenMaster.config.get_required_params(key.to_sym)
         end
 
         def check_manageable!(klass, key)

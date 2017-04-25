@@ -1,5 +1,4 @@
-require 'minitest/autorun'
-require 'token_master'
+require 'test_helper'
 
 describe TokenMaster::Model do
   before do

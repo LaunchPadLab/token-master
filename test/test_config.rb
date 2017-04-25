@@ -1,5 +1,4 @@
-require 'minitest/autorun'
-require 'token_master'
+require 'test_helper'
 
 describe TokenMaster::Config do
   it 'has defaults' do
@@ -27,8 +26,8 @@ describe TokenMaster::Config do
 
     it 'when configs not set' do
       config.add_tokenable_options(:invite, {})
-      assert_equal config.get_required_params(:invite), TokenMaster::Config::DEFAULT_VALUES[:required_params]
       assert_equal config.get_token_lifetime(:invite), TokenMaster::Config::DEFAULT_VALUES[:token_lifetime]
+      assert_equal config.get_required_params(:invite), TokenMaster::Config::DEFAULT_VALUES[:required_params]
       assert_equal config.get_token_length(:invite), TokenMaster::Config::DEFAULT_VALUES[:token_length]
     end
   end
