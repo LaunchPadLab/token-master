@@ -1,2 +1,2 @@
 --markup markdown
---exclude /lib/generators
+--exclude /generators
