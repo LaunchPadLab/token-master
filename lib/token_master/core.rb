@@ -2,7 +2,7 @@ require 'token_master/error'
 require 'securerandom'
 
 module TokenMaster
-  # `TokenMaster::Core` provides the core functionality of the TokenMaster gem. The `Core` module performs all of the logic of completing tokenable actions, and provides descriptive messages of the status or abilities of calls made
+  # `TokenMaster::Core` provides the core functionality of the TokenMaster gem. The `Core` module performs all of the logic of completing tokenable actions, and provides descriptive messages of the status or abilities of calls made.
   module Core
     class << self
 
@@ -30,7 +30,7 @@ module TokenMaster
         model
       end
 
-      # Completes the token action for a tokenable instance _without_ a token, setting the `tokenable_completed_at` to the time at completion<br /> Usually implemented when you want to complete multiple tokenable actions at once, e.g., a user completes the invite action by setting up passwords, by default also completes the confirm action
+      # Completes the token action for a tokenable instance _without_ a token, setting the `tokenable_completed_at` to the time at completion.<br /> Usually implemented when you want to complete multiple tokenable actions at once, e.g., a user completes the invite action by setting up passwords, by default also completes the confirm action
       # @example Force a Tokenable Action (Confirm)
       #   user.force_confirm! =>
       #     <User id: 205, name: "John Smith", email: "jsmith@example.com", confirm_token: nil, confirm_created_at: nil, confirm_sent_at: nil, confirm_completed_at: "2017-04-25 14:17:13">

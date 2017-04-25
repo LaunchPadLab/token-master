@@ -1,11 +1,13 @@
 module TokenMaster
 
-  # `TokenMaster::Model` provides the interface to the app it is used in, providing access to its public methods by definiing the appropriate methods on the app model(s).
+  # `TokenMaster::Model` provides the interface to the app it is used in, providing access to its public methods by invoking `TokenMaster::ClassMethods` and definiing the appropriate methods on the app model(s).
   module Model
+    # Includes `TokenMaster::Model` and extends `TokenMaster::ClassMethods` to the class it's used with (automatically included via Railties)
     def self.included(base)
       base.extend(ClassMethods)
     end
 
+    # `TokenMaster::ClassMethods` defines methods on the tokenable Class to be used in applying TokenMaster
     module ClassMethods
       # Iterates over each of the tokenables provided in the generator arguments to define the appropriate TokenMaster methods on the tokenable model
       def token_master(*tokenables)
