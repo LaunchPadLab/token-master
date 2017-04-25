@@ -18,7 +18,7 @@
 Whenever your application manages users, you will inevitably need to handle email confirmation, password reset, user invitations, and other authentication flows. While not too complicated, they are sort of annoying to implement and some great libraries have our backs. [Devise][devise] and [Sorcery][sorcery] are great options that we have used in the past, but we found ourselves wanting both a little less and a little more.
 
 ### Devise
-[Devise][devise] is an amazing gem! It is perfect when you want an all-in-one solution that handles user authentication and associated flows for your Rails/ERB app. Everything is in the box, including the routes, controllers, views, and even mailers to handle user auth. But we often use Rails as an API and/or wanted more control over all those pieces and it became difficult to peel back all the layers to just to confirm a users email.
+[Devise][devise] is an amazing gem! It is perfect when you want an all-in-one solution that handles user authentication and associated flows for your Rails/ERB app. Everything is in the box, including the routes, controllers, views, and even mailers to handle user auth. But we often use Rails as an API and/or wanted more control over all those pieces and it became difficult to peel back all the layers to just to confirm a user's email.
 
 ### Sorcery
 [Sorcery][sorcery] is great and we highly recommend it. It is closer to what we wanted but still was a bit more than we needed and even the < 20 methods seemed like more than necessary.
@@ -245,7 +245,7 @@ In addition to the 3 you have already seen in action, there is also:
 See the [Api Docs][docs] for more details.
 
 ## Advanced
-Sometimes in order to redeem a token, we want to make sure some additional information is present and possible save that to our model. For example, when implementing a password reset flow, we want to update the User with the new password and make sure that its valid.
+Sometimes in order to redeem a token, we want to make sure some additional information is present and possibly save that to our model. For example, when implementing a password reset flow, we want to update the User with the new password and make sure that its valid.
 
 Assuming we are using `has_secure_password` or something similar all we need to do is:
 1. Configure the *tokenable* to require these fields when redeeming the token
@@ -282,7 +282,7 @@ Yes! However, there is a small dependency on ActiveRecord, see below.
 ### Can I use this without ActiveRecord?
 Almost! There is only a slight dependence on a few ActiveRecord methods and its on our radar to refactor this a bit. In the meantime, a workaround is to make sure the class you are using implements `update`, `update!`, `save`, and `find_by`. In addition, you have to either add Token Master to your class with `include TokenMaster::Model` or use the Token Master core module explicitly:
 
-`user.set_confirm_token!` == `TokenMaster::Core.set_token!(User, :confirm)`
+`user.set_confirm_token!(token)` == `TokenMaster::Core.set_token!(User, :confirm)`
 
 See the [Api Docs][docs] for more details.
 
