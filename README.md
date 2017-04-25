@@ -46,7 +46,7 @@ Token Master does not handle user authentication, it assumes you have this cover
 Does not take over your app, minimal magic, and only if you want it. Token Master works with your existing authentication solution.
 
 ### Flexible
-Works for Apis, ERB apps and everything in between.
+Works for APIs, ERB apps and everything in between.
 
 ### Simple
 Only 6 methods and you may not even use them all!
@@ -143,7 +143,7 @@ end
 
 ## Details
 
-Lets revisit the Quick Start and fill in the details.
+Let's revisit the Quick Start and fill in the details.
 
 ### The Generator
 When you ran the generator
@@ -214,7 +214,7 @@ token_master :confirm, :invite, :reset, ...
 
 There are 2 tiny bits of magic here:
 
-1. In Rails apps by default, the Token Master module is included in your `ApplicationRecord` base class. However, if necessary, you can add this yourself by include the following in your class:
+1. In Rails apps by default, the Token Master module is included in your `ApplicationRecord` base class. However, if necessary, you can add this yourself by including the following in your class:
 ```
 include TokenMaster::Model
 ```
