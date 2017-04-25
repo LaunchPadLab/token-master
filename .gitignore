@@ -2,6 +2,5 @@
 token_master-*.gem
 Gemfile.lock
 coverage
-.yardopts
 doc
 .yardoc
