@@ -16,8 +16,8 @@ module TokenMaster
             TokenMaster::Core.set_token!(self, tokenable)
           end
           # TODO
-          define_method("send_#{tokenable}_instructions!") do |email|
-            TokenMaster::Core.send_instructions!(self, tokenable, email)
+          define_method("send_#{tokenable}_instructions!") do |&email|
+            TokenMaster::Core.send_instructions!(self, tokenable, &email)
           end
           # TODO
           define_method("#{tokenable}_status") do
