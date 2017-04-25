@@ -5,6 +5,7 @@
 
 [![GitHub](http://img.shields.io/badge/github-launchpadlab/token_master-blue.svg)](http://github.com/launchpadlab/token_master)
 [![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/token_master)
+[![Inline docs](http://inch-ci.org/github/LaunchPadLab/token-master.svg?branch=master)](http://inch-ci.org/github/LaunchPadLab/token-master)
 [![Gem Version](https://badge.fury.io/rb/token_master.svg)](https://badge.fury.io/rb/token_master)
 [![Build Status](https://travis-ci.org/LaunchPadLab/token-master.svg?branch=master)](https://travis-ci.org/LaunchPadLab/token-master)
 [![Test Coverage](https://codeclimate.com/github/LaunchPadLab/token-master/badges/coverage.svg)](https://codeclimate.com/github/LaunchPadLab/token-master/coverage)
@@ -97,18 +98,18 @@ end
 
 ```
 class UsersController < ApplicationController
-  
+
   ...
-  
+
   def create
-    
+
     # Creating the user is up to you, here is an example
     user = User.create!(
       email: params[:email],
       password: params[:password],
       password_confirmation: params[:password_confirmation]
     )
-    
+
     # Generate and save a unique token
     token = user.set_confirm_token!
 
@@ -118,7 +119,7 @@ class UsersController < ApplicationController
       UserMailer.send_confirm(user) # or some other logic
     end
   end
-  
+
   ...
 
 end
@@ -128,18 +129,18 @@ end
 
 ```
 class UsersController < ApplicationController
-  
+
   ...
-  
+
   def confirm
 
     # find the user by the token and mark the token as completed
     user = User.confirm_by_token!(params[:token])
-    
+
     ...
- 
+
   end
-   
+
   ...
 
 end
@@ -261,7 +262,7 @@ TokenMaster.config do |config|
   ...
 
   config.add_tokenable_options :reset_password, required_params: [:password, :password_confirmation]
-   
+
   ...
 
 end
