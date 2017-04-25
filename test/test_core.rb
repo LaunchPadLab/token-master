@@ -1,5 +1,4 @@
-require 'minitest/autorun'
-require 'token_master'
+require 'test_helper'
 
 def days(duration = 1)
   duration * 60 * 60 * 24
@@ -129,13 +128,13 @@ describe TokenMaster::Core do
 
   describe '#check_manageable!' do
     it 'anything' do
-      assert_raises TokenMaster::NotTokenable do
+      assert_raises TokenMaster::Errors::NotTokenable do
         TM.send(:check_manageable!, String, String)
       end
     end
 
     it 'active record' do
-      assert_raises TokenMaster::NotTokenable do
+      assert_raises TokenMaster::Errors::NotTokenable do
         TM.send(:check_manageable!, MockActiveRecord, 'confirm')
       end
     end
@@ -166,7 +165,7 @@ describe TokenMaster::Core do
     end
 
     it 'when not set' do
-      assert_raises TokenMaster::TokenNotSet do
+      assert_raises TokenMaster::Errors::TokenNotSet do
         TM.send(:check_token_set!, @manageable_model, 'confirm')
       end
     end
@@ -210,7 +209,7 @@ describe TokenMaster::Core do
     end
 
     it 'when token not active' do
-      assert_raises TokenMaster::TokenExpired do
+      assert_raises TokenMaster::Errors::TokenExpired do
         TM.send(:check_token_active!, @manageable_model, 'confirm')
       end
     end
@@ -248,7 +247,7 @@ describe TokenMaster::Core do
 
     it 'when sent' do
       @manageable_model.confirm_sent_at = Time.now - (7 * days)
-      assert_raises TokenMaster::TokenSent do
+      assert_raises TokenMaster::Errors::TokenSent do
         TM.send(:check_instructions_sent!, @manageable_model, 'confirm')
       end
     end
@@ -261,7 +260,7 @@ describe TokenMaster::Core do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::NotTokenable do
+        assert_raises TokenMaster::Errors::NotTokenable do
           TM.set_token!(@model, 'confirm')
         end
       end
@@ -316,7 +315,7 @@ describe TokenMaster::Core do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::NotTokenable do
+        assert_raises TokenMaster::Errors::NotTokenable do
           TM.do_by_token!(@klass, @key, @token)
         end
       end
@@ -329,7 +328,7 @@ describe TokenMaster::Core do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::TokenExpired do
+        assert_raises TokenMaster::Errors::TokenExpired do
           TM.do_by_token!(@klass, 'confirm', @token)
         end
       end
@@ -344,7 +343,7 @@ describe TokenMaster::Core do
 
       describe 'when required params not present' do
         it 'raises' do
-          assert_raises TokenMaster::MissingRequiredParams do
+          assert_raises TokenMaster::Errors::MissingRequiredParams do
             TM.do_by_token!(@klass, 'reset', @token, { password: @new_password })
           end
         end
@@ -374,7 +373,7 @@ describe TokenMaster::Core do
   describe '#force_tokenable!' do
     describe 'when not manageable' do
       it 'raises' do
-        assert_raises TokenMaster::NotTokenable do
+        assert_raises TokenMaster::Errors::NotTokenable do
           not_manageable = MockActiveRecord.new
           TM.force_tokenable!(not_manageable, 'confirm')
         end
@@ -386,7 +385,7 @@ describe TokenMaster::Core do
         it 'raises' do
           model = MockTokenMaster.new
           params = { password: 'password' }
-          assert_raises TokenMaster::MissingRequiredParams do
+          assert_raises TokenMaster::Errors::MissingRequiredParams do
             TM.force_tokenable!(model, 'reset', params)
           end
         end
@@ -440,7 +439,7 @@ describe TokenMaster::Core do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::NotTokenable do
+        assert_raises TokenMaster::Errors::NotTokenable do
           TM.send_instructions!(@model, 'confirm')
         end
       end
@@ -452,7 +451,7 @@ describe TokenMaster::Core do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::TokenNotSet do
+        assert_raises TokenMaster::Errors::TokenNotSet do
           TM.send_instructions!(@model, 'confirm')
         end
       end
@@ -466,7 +465,7 @@ describe TokenMaster::Core do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::TokenSent do
+        assert_raises TokenMaster::Errors::TokenSent do
           TM.send_instructions!(@model, 'confirm')
         end
       end
@@ -503,7 +502,7 @@ describe TokenMaster::Core do
       end
 
       it 'raises' do
-        assert_raises TokenMaster::NotTokenable do
+        assert_raises TokenMaster::Errors::NotTokenable do
           TM.do_by_token!(@klass, @key, @token)
         end
       end

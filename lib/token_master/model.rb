@@ -18,8 +18,8 @@ module TokenMaster
           end
 
           # Defines a method on the tokenable model instance to send tokenable action instructions, e.g., `user.send_confim_instructions!`. Accepts a block with app logic to send instructions.
-          define_method("send_#{tokenable}_instructions!") do |email|
-            TokenMaster::Core.send_instructions!(self, tokenable, email)
+          define_method("send_#{tokenable}_instructions!") do |&email|
+            TokenMaster::Core.send_instructions!(self, tokenable, &email)
           end
 
           # Defines a method on the tokenable model instance to retrieve the status of a tokenable action, e.g., `user.confim_status`
