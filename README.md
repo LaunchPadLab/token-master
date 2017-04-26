@@ -1,7 +1,5 @@
-<h1>
-  <img src="badge.svg" alt="Token Master Logo" style="width: 100px;"/>
-  Token Master
-</h1>
+<img src="badge.png" alt="Token Master Logo" width="150"/>
+<h1>Token Master</h1>
 
 [![GitHub](http://img.shields.io/badge/github-launchpadlab/token_master-blue.svg)](http://github.com/launchpadlab/token_master)
 [![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/token_master)
