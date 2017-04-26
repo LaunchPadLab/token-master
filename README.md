@@ -1,5 +1,5 @@
 <h1>
-  <img src="badge.svg" alt="Token Master Logo" style="width: 100px;"/>
+  <img src="badge.png" alt="Token Master Logo" style="width: 100px;"/>
   Token Master
 </h1>
 
