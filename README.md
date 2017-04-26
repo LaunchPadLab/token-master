@@ -16,9 +16,10 @@
 * [Quick Start](#quick-start)
 * [Details](#details)
 * [FAQ](#faq)
+* [Comparisons](#comparisons)
 
 ## Motivation
-Whenever your application manages users, you will inevitably need to handle email confirmation, password reset, user invitations, and other authentication flows. While not too complicated, they are sort of annoying to implement and some great libraries have our backs. [Devise][devise] and [Sorcery][sorcery] are great options that we have used in the past, but we found ourselves wanting both a little less and a little more. See our more detailed thoughts on these options [below](#comparisons-and-benchmarking).
+Whenever your application manages users, you will inevitably need to handle email confirmation, password reset, user invitations, and other authentication flows. While not too complicated, they are sort of annoying to implement and some great libraries have our backs. [Devise][devise] and [Sorcery][sorcery] are great options that we have used in the past, but we found ourselves wanting both a little less and a little more. See our more detailed thoughts on these options [below](#comparisons).
 
 ### User Authentication Flows
 Email confirmation, password reset, user invitations are all variations of the same process:
@@ -296,7 +297,7 @@ The gem is available as open source under the terms of the [MIT License](http://
 
 ---------------------------
 
-### Comparisons and Benchmarking
+## Comparisons
 
 ### Devise
 [Devise][devise] is an amazing gem! It is perfect when you want an all-in-one solution that handles user authentication and associated flows for your Rails/ERB app. Everything is in the box, including the routes, controllers, views, and even mailers to handle user auth. But we often use Rails as an API and/or wanted more control over all those pieces and it became difficult to peel back all the layers to just to confirm a user's email.
