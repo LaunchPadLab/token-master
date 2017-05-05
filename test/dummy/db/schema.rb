@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170330162223) do
+ActiveRecord::Schema.define(version: 20170505171217) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,14 +25,14 @@ ActiveRecord::Schema.define(version: 20170330162223) do
     t.datetime "confirm_created_at"
     t.datetime "confirm_sent_at"
     t.datetime "confirm_completed_at"
-    t.string   "invite_token"
-    t.datetime "invite_created_at"
-    t.datetime "invite_sent_at"
-    t.datetime "invite_completed_at"
     t.string   "reset_token"
     t.datetime "reset_created_at"
     t.datetime "reset_sent_at"
     t.datetime "reset_completed_at"
+    t.string   "invite_token"
+    t.datetime "invite_created_at"
+    t.datetime "invite_sent_at"
+    t.datetime "invite_completed_at"
     t.index ["confirm_token"], name: "index_users_on_confirm_token", using: :btree
     t.index ["invite_token"], name: "index_users_on_invite_token", using: :btree
     t.index ["reset_token"], name: "index_users_on_reset_token", using: :btree

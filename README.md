@@ -47,7 +47,7 @@ Does not take over your app, minimal magic, and only if you want it. Token Maste
 Works for APIs, ERB apps and everything in between.
 
 ### Simple
-Only 6 methods and you may not even use them all!
+Only 5 methods and you may not even use them all!
 
 ### Helpful errors
 We take the approach of raising an error whenever anything unexpected happens and provide a specific error with a helpful message to aid your debugging and testing experience.
