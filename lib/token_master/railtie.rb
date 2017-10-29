@@ -6,11 +6,7 @@ module TokenMaster
 
     initializer 'token_master.active_record' do
       ActiveSupport.on_load :active_record do
-        if Rails::VERSION::MAJOR >= 5
-          ::ApplicationRecord.include(TokenMaster::Model)
-        else
-          ::ActiveRecord::Base.include(TokenMaster::Model)
-        end
+        include TokenMaster::Model
       end
     end
   end
