@@ -12,7 +12,7 @@
 Simple token logic for providing (temporary) restricted access.
 No routing, views, controllers, or mailers, just logic that you can use wherever and whenever you want.
 
-Tokens can be used for any action, such as inviting, confirming, or resetting passwords. These actions can be considered *tokenable actions*.
+Tokens can be used for any action that needs the access, such as inviting, confirming, or resetting passwords. These actions can be considered *tokenable actions*.
 
 Tokenable actions can be attributed to any model, not just users. These models then become *tokenable models*.
 
