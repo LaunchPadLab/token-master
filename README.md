@@ -98,34 +98,6 @@ class UsersController < ApplicationController
 end
 ```
 
-## Advanced
-Sometimes in order to redeem a token, we want to make sure some additional information is present and possibly save that to our model.
-For example, when implementing a password reset flow, we want to update the User with the new password and make sure it's valid.
-
-Assuming we are using `has_secure_password` or something similar all we need to do is:
-1. Configure the *tokenable action* to require these fields when redeeming the token
-
-**../initializers/token_master.rb**
-```
-TokenMaster.config do |config|
-  config.add_tokenable_options :reset_password,
-    token_lifetime:  1
-    required_params: [:password, :password_confirmation]
-    token_length:    30
-end
-```
-
-2. Include those parameters when redeeming the token (If you don't you will get an error!)
-```
-User.reset_password_by_token!(
-  token,
-  password: password,
-  password_confirmation: password_confirmation
-)
-```
-
-Under the hood, Token Master calls `update!` on the model, so if the model is not valid, it won't be saved and the token will not be redeemed.
-
 ## Details
 
 Let's revisit the Quick Start and fill in the details.
@@ -230,6 +202,34 @@ In addition to the three you have already seen in action, there is also:
 
 See the [Api Docs][docs] for more details.
 
+## Advanced
+Sometimes in order to redeem a token, we want to make sure some additional information is present and possibly save that to our model.
+For example, when implementing a password reset flow, we want to update the User with the new password and make sure it's valid.
+
+Assuming we are using `has_secure_password` or something similar all we need to do is:
+1. Configure the *tokenable action* to require these fields when redeeming the token
+
+**../initializers/token_master.rb**
+```
+TokenMaster.config do |config|
+  config.add_tokenable_options :reset_password,
+    token_lifetime:  1
+    required_params: [:password, :password_confirmation]
+    token_length:    30
+end
+```
+
+2. Include those parameters when redeeming the token (If you don't you will get an error!)
+```
+User.reset_password_by_token!(
+  token,
+  password: password,
+  password_confirmation: password_confirmation
+)
+```
+
+Under the hood, Token Master calls `update!` on the model, so if the model is not valid, it won't be saved and the token will not be redeemed.
+
 ## FAQ
 
 ### Can I use this without Rails?
@@ -245,44 +245,6 @@ See the [Api Docs][docs] for more details.
 ### Who is Launchpad Lab?
 We are product builders, check us out at [Launchpad Lab][lpl]
 
-## Motivation
-Whenever your application manages users, you will inevitably need to handle email confirmation, password reset, user invitations, and other authentication flows.
-While not too complicated, they are sort of annoying to implement. Luckily, there are some great libraries that have our backs.
-[Devise][devise] and [Sorcery][sorcery] are great options that we have used in the past, but as we began using Rails for API-only applications, we found ourselves wanting both a little less and a little more.
-See our more detailed thoughts on these options [below](#comparisons).
-
-### Why Token Master
-As we looked at our use cases, we concluded that email confirmation, password reset, and user invitations are all variations of the same process:
-
-1. Create a unique token that allows the user temporary and limited access to your application
-2. Notify the user with a link to redeem the token
-3. Redeem or reject the token based on certain conditions (ex. validity, expiration, etc)
-4. Update the user with any new information
-5. Revoke the token
-
-They are all **tokenable** activities, and all you need to do them is a token.
-
-Ultimately we landed on the logic and interface in Token Master we've described above, and can offer the following benefits:
-
-#### Front-end agnostic
-No routing, views, controllers, or mailers, just logic that you can use wherever and whenever you want.
-
-#### Authentication strategy agnostic
-Token Master does not handle user authentication, it assumes you have this covered with `has_secure_password`, Devise, Sorcery, or other solutions
-
-#### Unobtrusive
-Does not take over your app, minimal magic, and only if you want it. Token Master works with your existing authentication solution.
-
-
-#### Flexible
-Works for APIs, ERB apps and everything in between.
-
-#### Simple
-Only five method types and you may not even use them all!
-
-#### Helpful errors
-We take the approach of raising an error whenever anything unexpected happens and provide a specific error with a helpful message to aid your debugging and testing experience.
-
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/LaunchpadLab/token-master.
@@ -290,14 +252,6 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/Launch
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
-## Comparisons
-
-### Devise
-[Devise][devise] is an amazing gem! It is perfect when you want an all-in-one solution that handles user authentication and associated flows for your Rails/ERB app. Everything is in the box, including the routes, controllers, views, and even mailers to handle user auth. But we often use Rails as an API and/or wanted more control over all those pieces and it became difficult to peel back all the layers to just to confirm a user's email.
-
-### Sorcery
-[Sorcery][sorcery] is great and we highly recommend it. It is closer to what we wanted but still was a bit more than we needed and even the < 20 methods seemed like more than necessary.
 
 ---------------------------
 <!-- Links -->
