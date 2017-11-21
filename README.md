@@ -9,48 +9,17 @@
 [![Test Coverage](https://codeclimate.com/github/LaunchPadLab/token-master/badges/coverage.svg)](https://codeclimate.com/github/LaunchPadLab/token-master/coverage)
 [![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
 
-**Minimal** and **Simple** user management for Ruby and Rails applications.
+Simple token logic for providing (temporary) restricted access.
+No routing, views, controllers, or mailers, just logic that you can use wherever and whenever you want.
 
-* [Motivation](#motivation)
-* [Token Master](#enter-the-token-master)
+Tokens can be used for any action that needs the access, such as inviting, confirming, or resetting passwords. These actions can be considered *tokenable actions*.
+
+Tokenable actions can be attributed to any model, not just users. These models then become *tokenable models*.
+
 * [Quick Start](#quick-start)
 * [Details](#details)
 * [FAQ](#faq)
-* [Comparisons](#comparisons)
-
-## Motivation
-Whenever your application manages users, you will inevitably need to handle email confirmation, password reset, user invitations, and other authentication flows. While not too complicated, they are sort of annoying to implement and some great libraries have our backs. [Devise][devise] and [Sorcery][sorcery] are great options that we have used in the past, but we found ourselves wanting both a little less and a little more. See our more detailed thoughts on these options [below](#comparisons).
-
-### User Authentication Flows
-Email confirmation, password reset, user invitations are all variations of the same process:
-
-1. Create a unique token that allows the user temporary and limited access to your application
-2. Notify the user with a link to redeem the token
-3. Redeem or reject the token based on certain conditions (ex. validity, expiration, etc)
-4. Update the user with any new information
-5. Revoke the token
-
-They are all *tokenable* activities, and all you need to do them is a **Token Master**!
-
-## Enter the Token Master
-
-### Front-end agnostic
-No routing, views, controllers, or mailers, just logic that you can use wherever and whenever you want.
-
-### Authentication strategy agnostic
-Token Master does not handle user authentication, it assumes you have this covered with `has_secure_password`, Devise, Sorcery, or other solutions
-
-### Unobtrusive
-Does not take over your app, minimal magic, and only if you want it. Token Master works with your existing authentication solution.
-
-### Flexible
-Works for APIs, ERB apps and everything in between.
-
-### Simple
-Only 5 methods and you may not even use them all!
-
-### Helpful errors
-We take the approach of raising an error whenever anything unexpected happens and provide a specific error with a helpful message to aid your debugging and testing experience.
+* [Motivation](#motivation)
 
 ## Quick Start
 
@@ -67,19 +36,19 @@ Or install it yourself as:
 
 `$ gem install token_master`
 
-### Add a *tokenable*
+### Usage
 
-##### These examples assume Rails 5, but anything >= 4 will work.
+##### These examples assume Rails 5, but anything >= 4 will work
 
-Let's say you want to add email confirmation flow to your User.
+Let's say you want to add email confirmation flow to your User. Your **tokenable model** then is the **User** model, and the **tokenable action** might be something like *confirm* (although you can name it anything, as long as you are consistent).
 
-1. Create and run a migration to add the necessary columns to the `users` table
+1. Create and run a migration to add the necessary columns to the `users` table like so:
 ```
 bundle exec rails generate token_master User confirm
 bundle exec rails db:migrate
 ```
 
-2. Add Token Master to the User class
+2. Add the Token Master `token_master` hook to the User class, and pass in the symbol for your *tokenable action*:
 
 ```
 class User < ApplicationRecord
@@ -87,12 +56,10 @@ class User < ApplicationRecord
 end
 ```
 
-3. Somewhere during the signup flow, generate and send the token
+3. Somewhere during the signup flow, generate and send the token:
 
 ```
 class UsersController < ApplicationController
-
-  ...
 
   def create
 
@@ -103,39 +70,31 @@ class UsersController < ApplicationController
       password_confirmation: params[:password_confirmation]
     )
 
-    # Generate and save a unique token
+    # Generate and save a unique token on the new user
     token = user.set_confirm_token!
 
     # Mark the token as sent
     user.send_confirm_instructions! do
-      # Sending the email is up to you
+      # Sending the email is up to you, by passing a block here:
       UserMailer.send_confirm(user) # or some other logic
     end
   end
 
-  ...
-
 end
 ```
 
-4. Somewhere during the confirmation flow, find and confirm the User
+4. Somewhere during the confirmation flow, find and confirm the user:
 
 ```
 class UsersController < ApplicationController
-
-  ...
-
   def confirm
 
-    # find the user by the token and mark the token as completed
+    # finds the user by the token, and mark the token as completed
     user = User.confirm_by_token!(params[:token])
 
     ...
 
   end
-
-  ...
-
 end
 ```
 
@@ -148,16 +107,16 @@ When you ran the generator
 ```
 bundle exec rails generate token_master User confirm
 ```
-you provided 2 variables:
-  * `User` - The class name of the model to which you are adding the *tokenable*
-  * `confirm` - The name of the *tokenable*
+you provided two arguments:
+  * `User` - The class name of the model to which you are adding the *tokenable action*
+  * `confirm` - The name of the *tokenable action*
 
 Both of these could be anything, as long as you use the same class and name later on. If you like, you can create multiple *tokenables* at the same time, just add more space-separated *tokenable* names when calling the generator:
 ```
-bundle exec rails generate token_master User confirm invite reset ...
+bundle exec rails generate token_master User confirm invite reset
 ```
 
-Running the generator does 2 things:
+Running the generator does two things:
 1. Creates a migration file in `#{Rails.root}/db/migrate` that looks like:
 
 ```
@@ -182,22 +141,21 @@ TokenMaster.config do |config|
   # Set up your configurations for each *tokenable* using the methods at the bottom of this file.
   # Example: For `confirm` logic:
   #
-  # config.add_tokenable_options :confirm,
-  #   token_lifetime:  15, # days
-  #   required_params: [:email],
-  #   token_length:    30 # characters
-  #
   # Default values:
   #   token_lifetime  = 15 # days
   #   required_params = []
   #   token_length    = 20 # characters
-  #
+
+  config.add_tokenable_options :confirm,
+    token_lifetime:  15, # days
+    required_params: [:email],
+    token_length:    30 # characters
 end
 ```
-The default values will be used unless you configure them otherwise. These options can be set for each *tokenable*.
+The default values will be used unless you configure them otherwise. These options can be set for each *tokenable action*.
 
 ### The Model
-When you added the *tokenable* to your model
+When you added the Token Master hook and  *tokenable action* to your model
 ```
 class User < ApplicationRecord
   token_master :confirm
@@ -207,18 +165,20 @@ just make sure the class `User` and *tokenable(s)* `:confirm` (this can be multi
 
 Ex.
 ```
-token_master :confirm, :invite, :reset, ...
+token_master :confirm, :invite, :reset
 ```
 
-There are 2 tiny bits of magic here:
+1. The `token_master` hook is included automatically by Token Master in your `ApplicationRecord` base class.
 
-1. In Rails apps by default, the Token Master module is included in your `ApplicationRecord` base class. However, if necessary, you can add this yourself by including the following in your class:
+However, if necessary, you can add this yourself by including the following in your class:
 ```
 include TokenMaster::Model
 ```
-This adds the `token_master` class method we used above.
+This adds the `token_master` class method we used above, and you can make the same calls we described in the `confirm` example above.
 
-2. When you call the `token_master` class method, for each *tokenable* you provide, 5 methods are added to the class (assuming the *tokenable* below is `confirm`):
+2. When you call the `token_master` class method, for each *tokenable action* you provide, five methods are added to the class for each *tokenable action*, and named accordingly.
+
+Assuming the *tokenable action* below is `confirm`, the methods would look like this:
 
 Instance methods
 * `set_confirm_token!`
@@ -229,35 +189,33 @@ Instance methods
 Class methods
 * `confirm_by_token!`
 
-In addition to the 3 you have already seen in action, there is also:
+In addition to the three you have already seen in action, there is also:
 
-`confirm_status` - returns the current status of the *tokenable*. This is one of:
+`confirm_status` - returns the current status of the *tokenable action*. This is one of:
 * 'no token'
 * 'created'
 * 'sent'
 * 'completed'
 * 'expired'
 
-`force_confirm!` - forcibly completes the given *tokenable*
+`force_confirm!` - forcibly completes the given *tokenable action*
 
 See the [Api Docs][docs] for more details.
 
 ## Advanced
-Sometimes in order to redeem a token, we want to make sure some additional information is present and possibly save that to our model. For example, when implementing a password reset flow, we want to update the User with the new password and make sure that its valid.
+Sometimes in order to redeem a token, we want to make sure some additional information is present and possibly save that to our model.
+For example, when implementing a password reset flow, we want to update the User with the new password and make sure it's valid.
 
 Assuming we are using `has_secure_password` or something similar all we need to do is:
-1. Configure the *tokenable* to require these fields when redeeming the token
+1. Configure the *tokenable action* to require these fields when redeeming the token
+
+**../initializers/token_master.rb**
 ```
-# in ../initializers/token_master.rb
-
 TokenMaster.config do |config|
-
-  ...
-
-  config.add_tokenable_options :reset_password, required_params: [:password, :password_confirmation]
-
-  ...
-
+  config.add_tokenable_options :reset_password,
+    token_lifetime:  1
+    required_params: [:password, :password_confirmation]
+    token_length:    30
 end
 ```
 
@@ -280,7 +238,7 @@ Yes! However, there is a small dependency on ActiveRecord, see below.
 ### Can I use this without ActiveRecord?
 Almost! There is only a slight dependence on a few ActiveRecord methods and its on our radar to refactor this a bit. In the meantime, a workaround is to make sure the class you are using implements `update`, `update!`, `save`, and `find_by`. In addition, you have to either add Token Master to your class with `include TokenMaster::Model` or use the Token Master core module explicitly:
 
-`user.set_confirm_token!(token)` == `TokenMaster::Core.set_token!(User, :confirm)`
+`TokenMaster::Core.set_token!(User, :confirm)` (which is equivalent to `user.set_confirm_token!(token)`)
 
 See the [Api Docs][docs] for more details.
 
@@ -296,15 +254,6 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/Launch
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
 ---------------------------
-
-## Comparisons
-
-### Devise
-[Devise][devise] is an amazing gem! It is perfect when you want an all-in-one solution that handles user authentication and associated flows for your Rails/ERB app. Everything is in the box, including the routes, controllers, views, and even mailers to handle user auth. But we often use Rails as an API and/or wanted more control over all those pieces and it became difficult to peel back all the layers to just to confirm a user's email.
-
-### Sorcery
-[Sorcery][sorcery] is great and we highly recommend it. It is closer to what we wanted but still was a bit more than we needed and even the < 20 methods seemed like more than necessary.
-
 <!-- Links -->
 [devise]: https://github.com/plataformatec/devise
 [sorcery]: https://github.com/Sorcery/sorcery
