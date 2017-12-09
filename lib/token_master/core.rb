@@ -95,7 +95,7 @@ module TokenMaster
       # Calls set_token! and send_instructions! to generate a new token and send instructions again (accepts a block, such as a mailer method, for sending instructions).<br />Note, any previously generated token for the user will be invalid.
       # @example Resend Reset Instructions
       #   user.resend_reset_instruction! { user.send_email } =>
-      #     <User id: 205, name: "John Smith", email: "jsmith@example.com", reset_token: "3YcHkTJ7kXwV5wM", reset_created_at: 2017-04-25 14:20:54", reset_sent_at: "2017-04-25 14:22:42", reset_completed_at: nil>
+      #     <User id: 205, name: "John Smith", email: "jsmith@example.com", reset_token: "4ZcHkSJ8kXrV4wl", reset_created_at: 2017-04-25 16:21:54", reset_sent_at: "2017-04-25 16:22:42", reset_completed_at: nil>
       # @param [Object] model the tokenable model instance
       # @param [String, Symbol] key  the tokenable action
       # @param [Integer] token_length the length of the generated token, method will use configuration token_length if not provided otherwise
