@@ -80,6 +80,15 @@ class UsersController < ApplicationController
     end
   end
 
+  def resend_confirmation_instructions
+
+    # if you have a 'resend instructions?' flow you can generate a new token and send instructions again in one step
+    user.resend_confirm_instructions! do
+      # Sending the email is up to you, by passing a block here:
+      UserMailer.send_confirm(user) # or some other logic
+    end
+  end
+
 end
 ```
 
@@ -176,13 +185,14 @@ include TokenMaster::Model
 ```
 This adds the `token_master` class method we used above, and you can make the same calls we described in the `confirm` example above.
 
-2. When you call the `token_master` class method, for each *tokenable action* you provide, five methods are added to the class for each *tokenable action*, and named accordingly.
+2. When you call the `token_master` class method, for each *tokenable action* you provide, a handful of methods are added to the class for each *tokenable action*, and named accordingly.
 
 Assuming the *tokenable action* below is `confirm`, the methods would look like this:
 
 Instance methods
 * `set_confirm_token!`
 * `send_confirm_instructions!`
+* `resend_confirm_instructions!`
 * `confirm_status`
 * `force_confirm!`
 

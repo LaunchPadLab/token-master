@@ -370,6 +370,39 @@ describe TokenMaster::Core do
     end
   end
 
+  describe '#resend_instructions!' do
+    describe 'when not manageable' do
+      it 'raises' do
+        assert_raises TokenMaster::Errors::NotTokenable do
+          TM.resend_instructions!(MockActiveRecord.new, 'confirm')
+        end
+      end
+    end
+
+    describe 'when manageable' do
+      before do
+        @model = MockTokenMaster.new
+        TM.set_token! @model, 'confirm'
+        TM.send_instructions! @model, 'confirm'
+        @old_token = @model.confirm_token
+        @old_sent_at = @model.confirm_sent_at
+        TM.resend_instructions! @model, 'confirm'
+      end
+
+      describe 'generates new token' do
+        it 'sets new token' do
+          refute_equal @model.confirm_token, @old_token
+        end
+      end
+
+      describe 'sends new instructions' do
+        it 'resets sent_at time' do
+          refute_equal @model.confirm_sent_at, @old_sent_at
+        end
+      end
+    end
+  end
+
   describe '#force_tokenable!' do
     describe 'when not manageable' do
       it 'raises' do

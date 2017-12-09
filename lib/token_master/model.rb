@@ -24,6 +24,11 @@ module TokenMaster
             TokenMaster::Core.send_instructions!(self, tokenable, &email)
           end
 
+          # Defines a method on the tokenable model instance to generate a new token and send tokenable action instructions again, e.g., `user.resend_confim_instructions!`. Accepts a block with app logic to send instructions.
+          define_method("resend_#{tokenable}_instructions!") do |&email|
+            TokenMaster::Core.resend_instructions!(self, tokenable, &email)
+          end
+
           # Defines a method on the tokenable model instance to retrieve the status of a tokenable action, e.g., `user.confim_status`
           define_method("#{tokenable}_status") do
             TokenMaster::Core.status(self, tokenable)
@@ -35,7 +40,7 @@ module TokenMaster
           end
           # class methods
 
-          # Defines a method on the tokenable model class to completed a tokenable action given a token, e.g., `User.confim_by_token!`. Takes the token and accepts any keyword arguments for `required_params`.
+          # Defines a method on the tokenable model class to complete a tokenable action given a token, e.g., `User.confim_by_token!`. Takes the token and accepts any keyword arguments for `required_params`.
           define_singleton_method("#{tokenable}_by_token!") do |token, **params|
             TokenMaster::Core.do_by_token!(self, tokenable, token, **params)
           end
