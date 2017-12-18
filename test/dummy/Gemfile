@@ -5,25 +5,23 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 5.0.2'
+gem 'bcrypt', '~> 3.1.7'
+gem 'factory_bot_rails'
+gem 'faker'
 gem 'pg', '~> 0.18'
 # gem 'puma', '~> 3.0'
-gem 'bcrypt', '~> 3.1.7'
+gem 'rails', '~> 5.0.2'
 gem 'token_master', path: './../..'
-gem 'faker'
-gem 'pry'
-gem 'factory_girl_rails'
 
 group :development, :test do
   gem 'byebug', platform: :mri
+  gem 'pry'
   gem 'rspec-rails'
 end
 
 group :development do
   gem 'web-console', '>= 3.3.0'
   gem 'listen'
-  # gem 'spring'
-  # gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 group :test do

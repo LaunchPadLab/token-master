@@ -41,6 +41,12 @@ describe TokenMaster::Model do
         end
       end
 
+      it '#resend_instructions!' do
+        TokenMaster::Core.stub :resend_instructions!, :foo do
+          assert_equal @tokenable_model.resend_confirm_instructions! {'foo'}, :foo
+        end
+      end
+
       it '#status' do
         TokenMaster::Core.stub :status, :foo do
           assert_equal @tokenable_model.confirm_status, :foo
