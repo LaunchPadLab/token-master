@@ -311,7 +311,7 @@ describe TokenMaster::Core do
         @klass = MockActiveRecord
         @key = 'confirm'
         @token = 'foo'
-        @new_password = "password"
+        @new_password = 'password'
       end
 
       it 'raises' do

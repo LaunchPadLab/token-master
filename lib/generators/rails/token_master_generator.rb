@@ -5,7 +5,7 @@ module Rails
     class TokenMasterGenerator < ActiveRecord::Generators::Base
       desc 'Creates a TokenMaster migration for the specified model.'
 
-      argument :attributes, type: :array, default: [], banner: "field:type field:type"
+      argument :attributes, type: :array, default: [], banner: 'field:type field:type'
 
       def self.source_root
         @source_root ||= File.expand_path('../templates', __FILE__)
@@ -28,7 +28,7 @@ module Rails
       end
 
       def install_generator
-        Rails::Generators.invoke("token_master:install", attributes_names)
+        Rails::Generators.invoke('token_master:install', attributes_names)
       end
 
       def migration_file_name

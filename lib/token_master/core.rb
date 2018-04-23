@@ -129,84 +129,84 @@ module TokenMaster
 
       private
 
-        def token_col(key)
-          "#{key}_token".to_sym
-        end
+      def token_col(key)
+        "#{key}_token".to_sym
+      end
 
-        def created_at_col(key)
-          "#{key}_created_at".to_sym
-        end
+      def created_at_col(key)
+        "#{key}_created_at".to_sym
+      end
 
-        def sent_at_col(key)
-          "#{key}_sent_at".to_sym
-        end
+      def sent_at_col(key)
+        "#{key}_sent_at".to_sym
+      end
 
-        def completed_at_col(key)
-          "#{key}_completed_at".to_sym
-        end
+      def completed_at_col(key)
+        "#{key}_completed_at".to_sym
+      end
 
-        def token_lifetime(key)
-          TokenMaster.config.get_token_lifetime(key.to_sym)
-        end
+      def token_lifetime(key)
+        TokenMaster.config.get_token_lifetime(key.to_sym)
+      end
 
-        def check_manageable!(klass, key)
-          raise Errors::NotTokenable, "#{klass} not #{key}able" unless manageable?(klass, key)
-        end
+      def check_manageable!(klass, key)
+        raise Errors::NotTokenable, "#{klass} not #{key}able" unless manageable?(klass, key)
+      end
 
-        def manageable?(klass, key)
-          return false unless klass.respond_to? :column_names
-          column_names = klass.column_names
-          %W(
-            #{key}_token
-            #{key}_created_at
-            #{key}_completed_at
-            #{key}_sent_at
-          ).all? { |attr| column_names.include? attr }
-        end
+      def manageable?(klass, key)
+        return false unless klass.respond_to? :column_names
+        column_names = klass.column_names
+        %W(
+          #{key}_token
+          #{key}_created_at
+          #{key}_completed_at
+          #{key}_sent_at
+        ).all? { |attr| column_names.include? attr }
+      end
 
-        def check_params!(key, params)
-          required_params = TokenMaster.config.get_required_params(key.to_sym)
-          raise Errors::MissingRequiredParams, 'You did not pass in the required params for this tokenable' unless required_params.all? do |k|
-            params.keys.include? k
-          end
+      def check_params!(key, params)
+        required_params = TokenMaster.config.get_required_params(key.to_sym)
+        raise Errors::MissingRequiredParams, 'You did not pass in the required params for this tokenable' unless required_params.all? do |k|
+          params.keys.include? k
         end
+      end
 
-        def check_token_active!(model, key)
-          raise Errors::TokenNotFound, "#{key} token not found" unless model
-          raise Errors::TokenCompleted, "#{key} already completed" if completed?(model, key)
-          raise Errors::TokenExpired, "#{key} token expired" unless token_active?(model, key)
-        end
+      def check_token_active!(model, key)
+        raise Errors::TokenNotFound, "#{key} token not found" unless model
+        raise Errors::TokenCompleted, "#{key} already completed" if completed?(model, key)
+        raise Errors::TokenExpired, "#{key} token expired" unless token_active?(model, key)
+      end
 
-        def token_active?(model, key)
-          model.send(token_col(key)) &&
+      def token_active?(model, key)
+        model.send(token_col(key)) &&
           model.send(created_at_col(key)) &&
           Time.now <= (model.send(created_at_col(key)) + ((token_lifetime(key)) * 60 * 60 * 24))
-        end
+      end
 
-        def check_instructions_sent!(model, key)
-          raise Errors::TokenSent, "#{key} already sent" if instructions_sent?(model, key)
-        end
+      def check_instructions_sent!(model, key)
+        raise Errors::TokenSent, "#{key} already sent" if instructions_sent?(model, key)
+      end
 
-        def instructions_sent?(model, key)
-          model.send(sent_at_col(key)).present?
-        end
+      def instructions_sent?(model, key)
+        model.send(sent_at_col(key)).present?
+      end
 
-        def token_set?(model, key)
-          model.send(token_col(key)).present?
-        end
+      def token_set?(model, key)
+        model.send(token_col(key)).present?
+      end
 
-        def check_token_set!(model, key)
-          raise Errors::TokenNotSet, "#{key}_token not set" unless token_set?(model, key)
-        end
+      def check_token_set!(model, key)
+        raise Errors::TokenNotSet, "#{key}_token not set" unless token_set?(model, key)
+      end
 
-        def completed?(model, key)
-          model.send(completed_at_col(key)).present?
-        end
+      def completed?(model, key)
+        model.send(completed_at_col(key)).present?
+      end
 
-        def generate_token(length)
-          rlength = (length * 3) / 4
-          SecureRandom.urlsafe_base64(rlength).tr('lIO0', 'sxyz')
-        end
+      def generate_token(length)
+        rlength = (length * 3) / 4
+        SecureRandom.urlsafe_base64(rlength).tr('lIO0', 'sxyz')
+      end
     end
   end
 end

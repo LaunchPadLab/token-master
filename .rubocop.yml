@@ -7,6 +7,8 @@ AllCops:
     - Gemfile*
     - config/*
     - node_modules/**/*
+    - dummy/db/schema.rb
+    - dummy/db/migrate/*
 
 #################### Layout ################################
 
