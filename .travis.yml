@@ -1,7 +1,6 @@
 language: ruby
 
 install:
-  - gem install rubocop
   - bundle install
 
 addons:
