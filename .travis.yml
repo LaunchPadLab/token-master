@@ -2,6 +2,7 @@ language: ruby
 
 install:
   - gem install rubocop
+  - bundle install
 
 addons:
   code_climate:
