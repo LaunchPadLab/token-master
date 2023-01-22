@@ -253,7 +253,7 @@ Almost! There is only a slight dependence on a few ActiveRecord methods and its 
 See the [Api Docs][docs] for more details.
 
 ### Who is Launchpad Lab?
-We are product builders, check us out at [Launchpad Lab][https://launchpadlab.com]
+We are product builders, check us out at [Launchpad Lab][https://launchpadlab.com/]
 
 ## Contributing
 
