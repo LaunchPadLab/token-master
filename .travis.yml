@@ -6,3 +6,9 @@ addons:
 
 after_success:
   - bundle exec codeclimate-test-reporter
+
+notifications:
+  email: false
+  slack:
+    on_success: never
+    on_failure: never
