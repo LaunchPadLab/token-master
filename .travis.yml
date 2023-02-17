@@ -1,5 +1,9 @@
 language: ruby
 
+before_install:
+  - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
+  - gem install bundler -v '< 2'
+
 addons:
   code_climate:
     repo_token: 455155dab5ce38bdda48bd7f4a94dd1e460889794046165191e5cf0a680e1999
