@@ -16,7 +16,7 @@ Tokens can be used for any action that needs the access, such as inviting, confi
 
 Tokenable actions can be attributed to any model, not just users. These models then become *tokenable models*.
 
-* [Quick Start](#quick-start)
+* [Quick Start](#quick-start) 
 * [Details](#details)
 * [FAQ](#faq)
 * [Motivation](#motivation)
